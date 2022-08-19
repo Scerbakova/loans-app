@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AmountAndPerson, Person } from 'src/app/person-credit-history';
+import { Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
 
 @Component({
@@ -14,9 +14,10 @@ export class NameInputComponent implements OnInit {
   findPersonEvent = new EventEmitter();
 
   nameForm: FormGroup = this.fb.group({});
-  people: Person[] | undefined;
+  people!: Person[];
+  peopleToSelect!: Person[];
   person!: Person;
-  personToBorrowFrom!: Person;
+  isChosen = false;
 
   constructor(
     private fb: FormBuilder,
@@ -37,41 +38,51 @@ export class NameInputComponent implements OnInit {
     this.nameForm = this.fb.group({
       mainPerson: ['', Validators.required],
       borrowFrom: [''],
+      borrowTo: [''],
       borrowFromAmount: 0,
+      borrowToAmount: 0,
     });
   }
 
   findPerson() {
     this.person = this.nameForm.value.mainPerson;
+    this.peopleToSelect = this.people.filter(human => human.name != this.person.name)
+    this.isChosen = true;
   }
 
+  // findPerson() {
+  //   this.personCreditHistoryService.findPerson(
+  //     this.person,
+  //     this.nameForm.value.mainPerson,
+  //     this.peopleToSelect,
+  //     this.people,
+  //     this.isChosen
+  //   );
+  // }
+
   borrowFromPerson() {
-    // this.personToBorrowFrom = this.nameForm.value.borrowFrom;
-
-    // let newLentData = {
-    //   amount: this.nameForm.value.borrowFromAmount,
-    //   name: this.person.name,
-    // };
-
-    // let newAmountForOnePerson: AmountAndPerson[] =
-    //   this.nameForm.value.borrowFrom.lent.amountToOnePerson;
-
-    // newAmountForOnePerson.push(newLentData);
-
-    // this.personToBorrowFrom.lent.amountToOnePerson = newAmountForOnePerson;
-
-    // this.personToBorrowFrom.lent.totalAmount = newLentData.amount;
-    this.personCreditHistoryService.setData(
-      this.personToBorrowFrom,
+    this.personCreditHistoryService.calculations(
+      this.people,
+      this.person,
       this.nameForm.value.borrowFrom,
-      this.nameForm.value.borrowFromAmount
+      this.nameForm.value.borrowFromAmount,
+      this.nameForm.value.borrowFrom.lent,
+      this.person.owes
     );
-    // this.personToBorrowFrom.lent.totalAmount =
-    //   this.personCreditHistoryService.setTotalLentAmount(
-    //     this.personToBorrowFrom.lent.totalAmount,
-    //     newAmountForOnePerson
-    //   );
 
-    return localStorage.setItem('people', JSON.stringify(this.people));
+    localStorage.setItem('people', JSON.stringify(this.people));
+  }
+
+  payBackTheDeptToPerson() {
+    this.personCreditHistoryService.calculations(
+      this.people,
+      this.person,
+      this.nameForm.value.borrowTo,
+      this.nameForm.value.borrowToAmount,
+      this.nameForm.value.borrowTo.owes,
+      this.person.paysDept
+    );
+
+    localStorage.setItem('people', JSON.stringify(this.people));
   }
 }

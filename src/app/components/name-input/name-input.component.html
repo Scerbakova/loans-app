@@ -26,14 +26,6 @@
           <span>{{ amountToPerson.name }}</span>
         </div>
       </div>
-      <!-- <div>
-        This person is owened
-        <span>{{ person.isOwened.totalAmount }}</span>
-        <div *ngFor="let amountToPerson of person.isOwened.amountToOnePerson">
-          <span>{{ amountToPerson.amount }}</span> to
-          <span>{{ amountToPerson.name }}</span>
-        </div>
-      </div> -->
       <div>
         This person lent
         <span>{{ person.lent.totalAmount }}</span>
@@ -42,14 +34,6 @@
           <span>{{ amountToPerson?.name }}</span>
         </div>
       </div>
-      <!-- <div>
-        This person pays dept
-        <span>{{ person.paysDept.totalAmount }}</span>
-        <div *ngFor="let amountToPerson of person.paysDept.amountToOnePerson">
-          <span>{{ amountToPerson.amount }}</span> to
-          <span>{{ amountToPerson.name }}</span>
-        </div>
-      </div> -->
     </div>
     <div>
       <div>This person wants to</div>
@@ -72,7 +56,10 @@
       <div class="input__container">
         <label class="label" for="returnMoneyTo">Return money to </label>
         <select formControlName="returnMoneyTo" id="returnMoneyTo">
-          <option *ngFor="let person of peopleToSelectToReturnMoney" [ngValue]="person">
+          <option
+            *ngFor="let person of peopleToSelectToReturnMoney"
+            [ngValue]="person"
+          >
             {{ person.name }}
           </option>
         </select>

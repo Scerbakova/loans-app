@@ -6,22 +6,16 @@ export class PersonCreditHistoryService {
       'John',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
-      // { totalAmount: 0, amountToOnePerson: [] },
-      // { totalAmount: 0, amountToOnePerson: [] }
     ),
     new Person(
       'Jack',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
-      // { totalAmount: 0, amountToOnePerson: [] },
-      // { totalAmount: 0, amountToOnePerson: [] }
     ),
     new Person(
       'Mary',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
-      // { totalAmount: 0, amountToOnePerson: [] },
-      // { totalAmount: 0, amountToOnePerson: [] }
     ),
   ];
 

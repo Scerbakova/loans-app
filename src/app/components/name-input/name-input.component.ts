@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AmountAndPerson, Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
 
+//!NAMING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 @Component({
   selector: 'app-name-input',
   templateUrl: './name-input.component.html',
@@ -71,7 +73,7 @@ export class NameInputComponent implements OnInit {
     this.person.owes.totalAmount =
       this.person.owes.totalAmount + +this.nameForm.value.borrowFromAmount;
 
-    //make new object in list of people who borrowed money to the person
+    //!make new object in list of people who borrowed money to the person
     this.person.owes.amountToOnePerson.push({
       amount: this.nameForm.value.borrowFromAmount,
       name: this.nameForm.value.borrowFrom.name,
@@ -82,11 +84,13 @@ export class NameInputComponent implements OnInit {
       this.nameForm.value.borrowFrom.lent.totalAmount +
       +this.nameForm.value.borrowFromAmount;
 
-    //make new object in list of people whom a person borrowed money
+    //!make new object in the list of people a person borrowed money to
     this.nameForm.value.borrowFrom.lent.amountToOnePerson.push({
       amount: this.nameForm.value.borrowFromAmount,
       name: this.person.name,
     });
+
+    //!esli hothat odolzhitj vtoroj raz?????????????????????????????????????????????????????
 
     // this.personCreditHistoryService.calculations(
     //   this.people,
@@ -113,53 +117,123 @@ export class NameInputComponent implements OnInit {
     let owesDataToExactPerson = this.person.owes.amountToOnePerson.find(
       (owesData) => owesData.name === this.nameForm.value.returnMoneyTo.name
     );
-    let lentDataToExactPerson = this.person.lent.amountToOnePerson.find(
-      (owesData) => owesData.name === this.nameForm.value.returnMoneyTo.name
-    );
+
+    let lentDataToExactPerson =
+      this.nameForm.value.returnMoneyTo.lent.amountToOnePerson.find(
+        (lentData: { name: string }) => lentData.name === this.person.name
+      );
 
     //summa kotoruju ja emu dolzhna minus summa iz inputa
     if (owesDataToExactPerson)
       if (
-        this.nameForm.value.returnMoneyToAmount <= owesDataToExactPerson.amount
+        this.nameForm.value.returnMoneyToAmount <= +owesDataToExactPerson.amount
       ) {
+        //dolg = dolg - summa iz inputa
         owesDataToExactPerson.amount =
           owesDataToExactPerson.amount -
           this.nameForm.value.returnMoneyToAmount;
+
+        //iz obschej summa dolga vichitaem summu inputa
         this.person.owes.totalAmount =
           this.person.owes.totalAmount -
           this.nameForm.value.returnMoneyToAmount;
+
+        //!ubriraem nulevoj objekt
+        this.person.owes.amountToOnePerson =
+          this.person.owes.amountToOnePerson.filter(
+            (owesData) => owesData.amount !== 0
+          );
+
+        //cheloveku, kotoromu vernuli dolg,
+        //v razdele odolzhennie ubiraem etu summu i udaljaem pustoj objekt////////////
+
+        // let lentDataToExactPerson =
+        //   this.nameForm.value.returnMoneyTo.lent.amountToOnePerson.find(
+        //     (lentData: { name: string }) => lentData.name === this.person.name
+        //   );
+        // console.log('lent', lentDataToExactPerson);
+
+        //odolzhennie = odolzhennie - summa iz inputa
+        lentDataToExactPerson.amount =
+          lentDataToExactPerson.amount -
+          this.nameForm.value.returnMoneyToAmount;
+
+        //odolzhennie(obschaja summa) = odolzhennie(objschaja summa) - summa iz inputa
+        this.nameForm.value.returnMoneyTo.lent.totalAmount =
+          this.nameForm.value.returnMoneyTo.lent.totalAmount -
+          this.nameForm.value.returnMoneyToAmount;
+
+        //!ubriraem nulevoj objekt
+        this.nameForm.value.returnMoneyTo.lent.amountToOnePerson =
+          this.nameForm.value.returnMoneyTo.lent.amountToOnePerson.filter(
+            (lentData: { amount: number }) => lentData.amount !== 0
+          );
       } else {
         //dolg stiraetsa, a raznica dobavljaetsa v odolzhennie i v dolg drugomu
+        //vichisljaem raznicu (polozhiteljnoe chislo)
+
         const overpay =
           this.nameForm.value.returnMoneyToAmount -
           owesDataToExactPerson.amount;
+
+        //dobavljaem raznicu v odolzhennie
+        this.person.lent.totalAmount = this.person.lent.totalAmount + overpay;
+
+        //!generiruem novij objekt v spiske dolzhnikov
+        this.person.lent.amountToOnePerson.push({
+          amount: overpay,
+          name: this.nameForm.value.returnMoneyTo.name,
+        });
+
+        //umenjshaem obschij dolg na summu dolga tomu cheloveku
+        this.person.owes.totalAmount =
+          this.person.owes.totalAmount - owesDataToExactPerson.amount;
+
+        // udaljaem amount kotorij on dolzhen tomu cheloveku
+        owesDataToExactPerson.amount = 0;
+
+        //esli tot chelovek nam odalzhival
         if (lentDataToExactPerson) {
-          lentDataToExactPerson.amount = lentDataToExactPerson.amount - overpay;
-          this.person.lent.totalAmount = this.person.lent.totalAmount - overpay;
+          //esli summa dolga boljshe pereplati, to
+          if (lentDataToExactPerson.amount > overpay) {
+            lentDataToExactPerson.amount =
+              lentDataToExactPerson.amount - overpay;
+          } else {
+            //to summi dolga ne suschestvuet bolee
+            lentDataToExactPerson.amount = 0;
+          }
+        }
+
+        //zapisivaem pereplatu v obschij dolg
+        this.nameForm.value.returnMoneyTo.owes.totalAmount =
+          this.nameForm.value.returnMoneyTo.owes.totalAmount + overpay;
+
+        //generiruem object dolga
+        this.nameForm.value.returnMoneyTo.owes.amountToOnePerson.push({
+          amount: overpay,
+          name: this.person.name,
+        });
+        //esli mi emu odalzhivali
+        if (owesDataToExactPerson) {
+          this.nameForm.value.returnMoneyTo.lent.totalAmount =
+            this.nameForm.value.returnMoneyTo.lent.totalAmount - overpay;
+          //esli summa odolzhennih deneg boljshe pereplati, to
+          if (owesDataToExactPerson.amount > overpay) {
+            owesDataToExactPerson.amount =
+              owesDataToExactPerson.amount - overpay;
+          } else {
+            //to summi dolga ne suschestvuet bolee
+            owesDataToExactPerson.amount = 0;
+          }
         }
       }
-    console.log(lentDataToExactPerson);
 
-    //ubratj nulevoj objekt
-    this.person.owes.amountToOnePerson =
-      this.person.owes.amountToOnePerson.filter(
-        (owesData) => owesData.amount !== 0
+    //!ubriraem nulevoj objekt
+    this.nameForm.value.returnMoneyTo.lent.amountToOnePerson =
+      this.nameForm.value.returnMoneyTo.lent.amountToOnePerson.filter(
+        (lentData: { amount: number }) => lentData.amount !== 0
       );
 
-    // const listOfPeopleMoneyWereTakenFrom = this.person.owes.amountToOnePerson.map(owesData => owesData.name)
-    // const listOfPeopleMoneyWereReturnedTo = this.person.paysDept.amountToOnePerson.map(paysDeptData => paysDeptData.name)
-    // const matchingName = listOfPeopleMoneyWereTakenFrom.filter(name => listOfPeopleMoneyWereReturnedTo.includes(name)).toString()
-    // let owesData = this.person.owes.amountToOnePerson.find(owesData => owesData.name === matchingName)
-    // let paysDeptData = this.person.paysDept.amountToOnePerson.find(paysDeptData => paysDeptData.name === matchingName)
-    // if(owesData && paysDeptData)
-    // if (owesData.amount > paysDeptData.amount) {
-    //   owesData.amount = owesData.amount - paysDeptData.amount
-    //   this.person.owes.totalAmount = this.person.owes.totalAmount - owesData?.amount
-    //  }
-
-    //probezhatjsa i posmotretj estj li dolg s takim imenem, esli estj,
-    //to dolg < vozvrata ? dolg = vozvrat - dolg, dolg = vozvratu ? vesj objekt ubiraem,
-    //dolg > vozvrata ? dolg ubiraem, a raznicu pishem v dolg tomu, komu vozvraschali
   }
 
   checkIfThereIsADept() {

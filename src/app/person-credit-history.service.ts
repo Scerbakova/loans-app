@@ -45,42 +45,42 @@ export class PersonCreditHistoryService {
     console.log(listOfOtherPeople);
   }
 
-  calculations(
-    allPeople: Person[],
-    mainPerson: Person,
-    secondaryPerson: Person,
-    amount: number,
-    to: Amount,
-    from: Amount
-  ) {
-    let newLentData: AmountAndPerson = {
-      amount: amount,
-      name: mainPerson.name,
-    };
+  // calculations(
+  //   allPeople: Person[],
+  //   mainPerson: Person,
+  //   secondaryPerson: Person,
+  //   amount: number,
+  //   to: Amount,
+  //   from: Amount
+  // ) {
+  //   let newLentData: AmountAndPerson = {
+  //     amount: amount,
+  //     name: mainPerson.name,
+  //   };
 
-    let newBorrowData: AmountAndPerson = {
-      amount: amount,
-      name: secondaryPerson.name,
-    };
+  //   let newBorrowData: AmountAndPerson = {
+  //     amount: amount,
+  //     name: secondaryPerson.name,
+  //   };
 
-    let newAmountForOnePersontoLent: AmountAndPerson[] = to.amountToOnePerson;
+  //   let newAmountForOnePersontoLent: AmountAndPerson[] = to.amountToOnePerson;
 
-    newAmountForOnePersontoLent.push(newLentData);
+  //   newAmountForOnePersontoLent.push(newLentData);
 
-    to.amountToOnePerson = newAmountForOnePersontoLent;
+  //   to.amountToOnePerson = newAmountForOnePersontoLent;
 
-    let newAmountForOnePersonToBorrow: AmountAndPerson[] =
-      from.amountToOnePerson;
+  //   let newAmountForOnePersonToBorrow: AmountAndPerson[] =
+  //     from.amountToOnePerson;
 
-    newAmountForOnePersonToBorrow.push(newBorrowData);
+  //   newAmountForOnePersonToBorrow.push(newBorrowData);
 
-    this.setTotalAmount(from, newAmountForOnePersonToBorrow);
+  //   this.setTotalAmount(from, newAmountForOnePersonToBorrow);
 
-    this.setTotalAmount(to, newAmountForOnePersontoLent);
+  //   this.setTotalAmount(to, newAmountForOnePersontoLent);
 
-    this.People = allPeople;
+  //   this.People = allPeople;
 
-    localStorage.setItem('people', JSON.stringify(allPeople));
+  //   localStorage.setItem('people', JSON.stringify(allPeople));
 
 
     // if (mainPerson.owes.amountToOnePerson.map((data) => data.name === newLentData.name)) {
@@ -104,13 +104,13 @@ export class PersonCreditHistoryService {
     // console.log(secondaryPerson)
   }
 
-  setTotalAmount(
-    amount: Amount,
-    newAmountForOnePerson: AmountAndPerson[]
-  ): number {
-    return (amount.totalAmount = newAmountForOnePerson
-      .map((paymentInfo) => +paymentInfo.amount)
-      .reduce((acc, val) => acc + val));
-  }
+  // setTotalAmount(
+  //   amount: Amount,
+  //   newAmountForOnePerson: AmountAndPerson[]
+  // ): number {
+  //   return (amount.totalAmount = newAmountForOnePerson
+  //     .map((paymentInfo) => +paymentInfo.amount)
+  //     .reduce((acc, val) => acc + val));
+  // }
 
-}
+// }

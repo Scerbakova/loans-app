@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Person } from 'src/app/person-credit-history';
+import { AmountAndPerson, Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
 
 @Component({
@@ -53,7 +53,7 @@ export class NameInputComponent implements OnInit {
     );
     this.isChosen = true;
     this.checkIfThereIsADept();
-    this.findPeopleToReturnMoneyTo()
+    this.findPeopleToReturnMoneyTo();
   }
 
   // findPerson() {
@@ -67,45 +67,84 @@ export class NameInputComponent implements OnInit {
   // }
 
   borrowFromPerson() {
-    this.personCreditHistoryService.calculations(
-      this.people,
-      this.person,
-      this.nameForm.value.borrowFrom,
-      this.nameForm.value.borrowFromAmount,
-      this.nameForm.value.borrowFrom.lent,
-      this.person.owes
-    );
+    //total amount of money to owe
+    this.person.owes.totalAmount =
+      this.person.owes.totalAmount + +this.nameForm.value.borrowFromAmount;
+
+    //make new object in list of people who borrowed money to the person
+    this.person.owes.amountToOnePerson.push({
+      amount: this.nameForm.value.borrowFromAmount,
+      name: this.nameForm.value.borrowFrom.name,
+    });
+
+    //total amount of money to lent
+    this.nameForm.value.borrowFrom.lent.totalAmount =
+      this.nameForm.value.borrowFrom.lent.totalAmount +
+      +this.nameForm.value.borrowFromAmount;
+
+    //make new object in list of people whom a person borrowed money
+    this.nameForm.value.borrowFrom.lent.amountToOnePerson.push({
+      amount: this.nameForm.value.borrowFromAmount,
+      name: this.person.name,
+    });
+
+    // this.personCreditHistoryService.calculations(
+    //   this.people,
+    //   this.person,
+    //   this.nameForm.value.borrowFrom,
+    //   this.nameForm.value.borrowFromAmount,
+    //   this.nameForm.value.borrowFrom.lent,
+    //   this.person.owes
+    // );
     this.checkIfThereIsADept();
-    this.findPeopleToReturnMoneyTo()
+    this.findPeopleToReturnMoneyTo();
   }
 
   payBackTheDeptToPerson() {
-    this.personCreditHistoryService.calculations(
-      this.people,
-      this.person,
-      this.nameForm.value.returnMoneyTo,
-      this.nameForm.value.returnMoneyToAmount,
-      this.nameForm.value.returnMoneyTo.owes,
-      this.person.lent
+    // this.personCreditHistoryService.calculations(
+    //   this.people,
+    //   this.person,
+    //   this.nameForm.value.returnMoneyTo,
+    //   this.nameForm.value.returnMoneyToAmount,
+    //   this.nameForm.value.returnMoneyTo.owes,
+    //   this.person.lent
+    // );
+    //informacija po konkretnomu cheloveku, kotorogo ja selektnula na vozvrat - skoljko ja emu dolzhna i ego imja
+    let owesDataToExactPerson = this.person.owes.amountToOnePerson.find(
+      (owesData) => owesData.name === this.nameForm.value.returnMoneyTo.name
     );
-      //informacija po konkretnomu cheloveku, kotorogo ja selektnula na vozvrat - skoljko ja emu dolzhna i ego imja
-    let owesDataToExactPerson = this.person.owes.amountToOnePerson.find(owesData => owesData.name === this.nameForm.value.returnMoneyTo.name)
-    //summa kotoruju ja emu dolzhna minus summa iz inputa
-    if (owesDataToExactPerson) 
-      if (this.nameForm.value.returnMoneyToAmount <= owesDataToExactPerson.amount) {
-        owesDataToExactPerson.amount = owesDataToExactPerson.amount - this.nameForm.value.returnMoneyToAmount
-        this.person.owes.totalAmount = this.person.owes.totalAmount - this.nameForm.value.returnMoneyToAmount
+    let lentDataToExactPerson = this.person.lent.amountToOnePerson.find(
+      (owesData) => owesData.name === this.nameForm.value.returnMoneyTo.name
+    );
 
+    //summa kotoruju ja emu dolzhna minus summa iz inputa
+    if (owesDataToExactPerson)
+      if (
+        this.nameForm.value.returnMoneyToAmount <= owesDataToExactPerson.amount
+      ) {
+        owesDataToExactPerson.amount =
+          owesDataToExactPerson.amount -
+          this.nameForm.value.returnMoneyToAmount;
+        this.person.owes.totalAmount =
+          this.person.owes.totalAmount -
+          this.nameForm.value.returnMoneyToAmount;
       } else {
         //dolg stiraetsa, a raznica dobavljaetsa v odolzhennie i v dolg drugomu
-        let lent 
+        const overpay =
+          this.nameForm.value.returnMoneyToAmount -
+          owesDataToExactPerson.amount;
+        if (lentDataToExactPerson) {
+          lentDataToExactPerson.amount = lentDataToExactPerson.amount - overpay;
+          this.person.lent.totalAmount = this.person.lent.totalAmount - overpay;
+        }
       }
-    console.log(owesDataToExactPerson)
+    console.log(lentDataToExactPerson);
 
-
-        //ubratj nulevoj objekt
-    this.person.owes.amountToOnePerson = this.person.owes.amountToOnePerson.filter(owesData => owesData.amount !== 0)
-    
+    //ubratj nulevoj objekt
+    this.person.owes.amountToOnePerson =
+      this.person.owes.amountToOnePerson.filter(
+        (owesData) => owesData.amount !== 0
+      );
 
     // const listOfPeopleMoneyWereTakenFrom = this.person.owes.amountToOnePerson.map(owesData => owesData.name)
     // const listOfPeopleMoneyWereReturnedTo = this.person.paysDept.amountToOnePerson.map(paysDeptData => paysDeptData.name)
@@ -117,7 +156,6 @@ export class NameInputComponent implements OnInit {
     //   owesData.amount = owesData.amount - paysDeptData.amount
     //   this.person.owes.totalAmount = this.person.owes.totalAmount - owesData?.amount
     //  }
-
 
     //probezhatjsa i posmotretj estj li dolg s takim imenem, esli estj,
     //to dolg < vozvrata ? dolg = vozvrat - dolg, dolg = vozvratu ? vesj objekt ubiraem,

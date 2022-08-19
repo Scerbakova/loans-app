@@ -6,22 +6,22 @@ export class PersonCreditHistoryService {
       'John',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
-      { totalAmount: 0, amountToOnePerson: [] },
-      { totalAmount: 0, amountToOnePerson: [] }
+      // { totalAmount: 0, amountToOnePerson: [] },
+      // { totalAmount: 0, amountToOnePerson: [] }
     ),
     new Person(
       'Jack',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
-      { totalAmount: 0, amountToOnePerson: [] },
-      { totalAmount: 0, amountToOnePerson: [] }
+      // { totalAmount: 0, amountToOnePerson: [] },
+      // { totalAmount: 0, amountToOnePerson: [] }
     ),
     new Person(
       'Mary',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
-      { totalAmount: 0, amountToOnePerson: [] },
-      { totalAmount: 0, amountToOnePerson: [] }
+      // { totalAmount: 0, amountToOnePerson: [] },
+      // { totalAmount: 0, amountToOnePerson: [] }
     ),
   ];
 
@@ -42,7 +42,7 @@ export class PersonCreditHistoryService {
       (person) => person.name != mainPerson.name
     );
     isChosen = true;
-    console.log(listOfOtherPeople)
+    console.log(listOfOtherPeople);
   }
 
   calculations(
@@ -78,14 +78,28 @@ export class PersonCreditHistoryService {
 
     this.setTotalAmount(to, newAmountForOnePersontoLent);
 
+    this.People = allPeople;
+
+    localStorage.setItem('people', JSON.stringify(allPeople));
+
+
     // if (mainPerson.owes.amountToOnePerson.map((data) => data.name === newLentData.name)) {
-      const personWhoLent = allPeople.find((person) => person.lent.amountToOnePerson.find((person) => person.name === newLentData.name))
-      console.log(personWhoLent)
-      if (personWhoLent?.owes.amountToOnePerson.find((person) => person.name === mainPerson.name)) {
-        if (mainPerson.owes.amountToOnePerson.find((data) => data.name === personWhoLent?.name))
-          console.log('match')
-      // }
-    }
+    //   const personWhoLent = allPeople.find((person) => person.lent.amountToOnePerson.find((person) => person.name === newLentData.name))
+    // console.log(personWhoLent)
+    // const data = personWhoLent?.owes.amountToOnePerson.find((person) => person.name === mainPerson.name)
+    // const data2 = mainPerson.owes.amountToOnePerson.find((data) => data.name === personWhoLent?.name)
+    //   if (data) {
+    //     if (data2)
+    //       if (data.amount >= data2.amount) {
+    //         data.amount = data.amount - data2.amount
+    //         data.amount === 0 ? data.name = '' : data
+    //       } else {
+    //         data2.amount = data2.amount - data.amount
+    //         data.amount === 0 ? data.name = '' : data
+    //       }
+    //     console.log(data, data2)
+    //   }
+    // }
 
     // console.log(secondaryPerson)
   }
@@ -98,4 +112,5 @@ export class PersonCreditHistoryService {
       .map((paymentInfo) => +paymentInfo.amount)
       .reduce((acc, val) => acc + val));
   }
+
 }

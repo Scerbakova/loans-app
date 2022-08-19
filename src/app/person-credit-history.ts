@@ -2,9 +2,9 @@ export class Person {
   constructor(
     public name: string,
     public owes: Amount,
-    public isOwened: Amount,
+    // public isOwened: Amount,
     public lent: Amount,
-    public paysDept: Amount
+    // public paysDept: Amount
   ) {}
 }
 

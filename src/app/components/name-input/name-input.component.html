@@ -40,7 +40,7 @@
       <div class="input__container">
         <label class="label" for="borrowFrom">Take money from </label>
         <select formControlName="borrowFrom" id="borrowFrom">
-          <option *ngFor="let person of peopleToSelect" [ngValue]="person">
+          <option *ngFor="let person of peopleToBorrowMoneyFrom" [ngValue]="person">
             {{ person.name }}
           </option>
         </select>
@@ -48,6 +48,22 @@
       <div class="input__container">
         <label class="label" for="borrowFromAmount">How much? </label>
         <input formControlName="borrowFromAmount" type="text" />
+      </div>
+      <button (click)="borrowFromPerson()">YES</button>
+    </div>
+    <div>
+      <div>This person wants to</div>
+      <div class="input__container">
+        <label class="label" for="LentTo">Give money to </label>
+        <select formControlName="LentTo" id="LentTo">
+          <option *ngFor="let person of peopleToLentMoneyTo" [ngValue]="person">
+            {{ person.name }}
+          </option>
+        </select>
+      </div>
+      <div class="input__container">
+        <label class="label" for="LentToAmount">How much? </label>
+        <input formControlName="LentToAmount" type="text" />
       </div>
       <button (click)="borrowFromPerson()">YES</button>
     </div>

@@ -1,6 +1,13 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AmountAndPerson, Person } from 'src/app/person-credit-history';
+import { Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
 
 //!NAMING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -12,12 +19,15 @@ import { PersonCreditHistoryService } from 'src/app/person-credit-history.servic
   providers: [PersonCreditHistoryService],
 })
 export class NameInputComponent implements OnInit {
+  @ViewChild('inputQuestion') inputQuestion: ElementRef | undefined;
+
   @Output()
   findPersonEvent = new EventEmitter();
 
   nameForm: FormGroup = this.fb.group({});
   people!: Person[];
-  peopleToSelect!: Person[];
+  peopleToBorrowMoneyFrom!: Person[];
+  peopleToLentMoneyTo!: Person[];
   peopleToSelectToReturnMoney!: Person[];
   person!: Person;
   isChosen = false;
@@ -29,12 +39,14 @@ export class NameInputComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.personCreditHistoryService.getData();
+    if (localStorage.getItem('people') === null) {
+      this.people = this.personCreditHistoryService.getData();
 
-    this.people = JSON.parse(
-      localStorage.getItem('people') || '[]'
-    ) as Person[];
-
+    } else {
+      this.people = JSON.parse(
+        localStorage.getItem('people') || '[]'
+      ) as Person[];
+    }
     this.buidForm();
   }
 
@@ -42,15 +54,21 @@ export class NameInputComponent implements OnInit {
     this.nameForm = this.fb.group({
       mainPerson: ['', Validators.required],
       borrowFrom: [''],
+      LentTo: [''],
       returnMoneyTo: [''],
-      borrowFromAmount: 0,
-      returnMoneyToAmount: 0,
+
+      borrowFromAmount: null,
+      LentToAmount: null,
+      returnMoneyToAmount: null,
     });
   }
 
   findPerson() {
     this.person = this.nameForm.value.mainPerson;
-    this.peopleToSelect = this.people.filter(
+    this.peopleToBorrowMoneyFrom = this.people.filter(
+      (human) => human.name != this.person.name
+    );
+    this.peopleToLentMoneyTo = this.people.filter(
       (human) => human.name != this.person.name
     );
     this.isChosen = true;
@@ -102,6 +120,44 @@ export class NameInputComponent implements OnInit {
     // );
     this.checkIfThereIsADept();
     this.findPeopleToReturnMoneyTo();
+    this.nameForm.reset();
+    localStorage.setItem('people', JSON.stringify(this.people));
+  }
+  lentMoneyTo() {
+    //total amount of money to owe
+    this.person.owes.totalAmount =
+      this.person.owes.totalAmount + +this.nameForm.value.borrowFromAmount;
+
+    //!make new object in list of people who borrowed money to the person
+    this.person.owes.amountToOnePerson.push({
+      amount: this.nameForm.value.borrowFromAmount,
+      name: this.nameForm.value.borrowFrom.name,
+    });
+
+    //total amount of money to lent
+    this.nameForm.value.borrowFrom.lent.totalAmount =
+      this.nameForm.value.borrowFrom.lent.totalAmount +
+      +this.nameForm.value.borrowFromAmount;
+
+    //!make new object in the list of people a person borrowed money to
+    this.nameForm.value.borrowFrom.lent.amountToOnePerson.push({
+      amount: this.nameForm.value.borrowFromAmount,
+      name: this.person.name,
+    });
+
+    //!esli hothat odolzhitj vtoroj raz?????????????????????????????????????????????????????
+
+    // this.personCreditHistoryService.calculations(
+    //   this.people,
+    //   this.person,
+    //   this.nameForm.value.borrowFrom,
+    //   this.nameForm.value.borrowFromAmount,
+    //   this.nameForm.value.borrowFrom.lent,
+    //   this.person.owes
+    // );
+    this.checkIfThereIsADept();
+    this.findPeopleToReturnMoneyTo();
+    this.nameForm.reset();
   }
 
   payBackTheDeptToPerson() {
@@ -233,7 +289,7 @@ export class NameInputComponent implements OnInit {
       this.nameForm.value.returnMoneyTo.lent.amountToOnePerson.filter(
         (lentData: { amount: number }) => lentData.amount !== 0
       );
-
+    this.nameForm.reset();
   }
 
   checkIfThereIsADept() {

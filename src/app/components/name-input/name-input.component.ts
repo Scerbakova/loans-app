@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AmountAndPerson, Person } from 'src/app/person-credit-history';
+import { Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
 
 //!NAMING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -28,10 +28,12 @@ export class NameInputComponent implements OnInit {
   people!: Person[];
   peopleToBorrowMoneyFrom!: Person[];
   peopleToLentMoneyTo!: Person[];
-  peopleToSelectToReturnMoney!: Person[];
+  peopleToReturnMoneyTo!: Person[];
+  peopleToReceiveMoneyFrom!: Person[];
   person!: Person;
   isChosen = false;
   personHasDept = false;
+  personHasDebtors = false;
 
   constructor(
     private fb: FormBuilder,
@@ -53,12 +55,14 @@ export class NameInputComponent implements OnInit {
     this.loansForm = this.fb.group({
       mainPerson: ['', Validators.required],
       borrowFrom: [''],
-      LentTo: [''],
+      lentTo: [''],
       returnMoneyTo: [''],
+      receiveMoneyBack: [''],
 
       borrowFromAmount: null,
-      LentToAmount: null,
+      lentToAmount: null,
       returnMoneyToAmount: null,
+      receiveMoneyBackAmount: null,
     });
   }
 
@@ -68,45 +72,22 @@ export class NameInputComponent implements OnInit {
 
   findPerson() {
     this.person = this.loansForm.value.mainPerson;
-    // this.makeAListOfPeople(this.people, this.person ,this.peopleToBorrowMoneyFrom)
-    this.peopleToBorrowMoneyFrom = this.people.filter(
-      (human) => human.name != this.person.name
-    );
-    this.peopleToLentMoneyTo = this.people.filter(
-      (human) => human.name != this.person.name
-    );
-    this.isChosen = true;
+    this.findPeopleToBorrowMoneyFrom();
+    this.findPeopleToLentMoneyTo();
     this.checkIfThereIsADept();
+    this.checkIfThereAreAnyDebtors();
     this.findPeopleToReturnMoneyTo();
+    this.findPeopleToReceiveMoneyFrom()
+    this.isChosen = true;
   }
-
-  //   makeAListOfPeople(
-  //   people: Person[],
-  //   mainPerson: Person,
-  //   nameOFList: Person[]
-  // ): Person[] {
-  //   return nameOFList = people.filter((person) => person.name != mainPerson.name);
-  // }
-
-  // findPerson() {
-  //   this.personCreditHistoryService.findMainPerson(
-  //     this.person,
-  //     this.loansForm.value.mainPerson,
-  //     this.peopleToSelectToReturnMoney,
-  //     this.people,
-  //     this.isChosen,
-  //     this.peopleToBorrowMoneyFrom,
-  //     this.peopleToLentMoneyTo
-  //   )
-  // }
 
   borrowFromPerson() {
     //total amount of money to owe
     this.person.owes.totalAmount =
-      this.person.owes.totalAmount + +this.loansForm.value.borrowFromAmount;
+      this.person.owes.totalAmount + this.loansForm.value.borrowFromAmount;
 
     if (
-      //entry with this name already exists in the list
+      //entry with this name already exists in the owes list of this.person
       this.personCreditHistoryService.checkWhetherSuchEntryExistsInAList(
         this.person.owes.amountToOnePerson,
         this.loansForm.value.borrowFrom.name
@@ -119,7 +100,7 @@ export class NameInputComponent implements OnInit {
         this.loansForm.value.borrowFromAmount
       );
     } else {
-      //make a new entry in the list of people who borrowed money to the person
+      //make a new entry in the owes list
       this.personCreditHistoryService.makeNewEntryInListOfAmountAndOerson(
         this.person.owes.amountToOnePerson,
         this.loansForm.value.borrowFromAmount,
@@ -132,7 +113,7 @@ export class NameInputComponent implements OnInit {
       +this.loansForm.value.borrowFromAmount;
 
     if (
-      //entry with this name already exists in the list
+      //entry with this name already exists in the lent list of another person
       this.personCreditHistoryService.checkWhetherSuchEntryExistsInAList(
         this.loansForm.value.borrowFrom.lent.amountToOnePerson,
         this.person.name
@@ -145,7 +126,7 @@ export class NameInputComponent implements OnInit {
         this.loansForm.value.borrowFromAmount
       );
     } else {
-      //make new entry in the list of people a person borrowed money to
+      //make new entry in the lent list
       this.personCreditHistoryService.makeNewEntryInListOfAmountAndOerson(
         this.loansForm.value.borrowFrom.lent.amountToOnePerson,
         this.loansForm.value.borrowFromAmount,
@@ -153,67 +134,93 @@ export class NameInputComponent implements OnInit {
       );
     }
 
-    //!esli hothat odolzhitj vtoroj raz?????????????????????????????????????????????????????
+    // if (
+    //   //entry with this name already exists in the lent list of this.person
+    //   this.personCreditHistoryService.checkWhetherSuchEntryExistsInAList(
+    //     this.person.lent.amountToOnePerson,
+    //     this.loansForm.value.borrowFrom.name
+    //   )
+    // ) {
+    //   //amount of money for this entry decreases by amount of money from input field
+    //   this.personCreditHistoryService.increaseAmountInEntry(
+    //     this.person.lent.amountToOnePerson,
+    //     this.loansForm.value.borrowFrom.name,
+    //     this.loansForm.value.borrowFromAmount
+    //   );
+    // } else {
+    // }
 
-    // this.personCreditHistoryService.calculations(
-    //   this.people,
-    //   this.person,
-    //   this.loansForm.value.borrowFrom,
-    //   this.loansForm.value.borrowFromAmount,
-    //   this.loansForm.value.borrowFrom.lent,
-    //   this.person.owes
-    // );
     this.checkIfThereIsADept();
+    this.checkIfThereAreAnyDebtors();
     this.findPeopleToReturnMoneyTo();
+    this.findPeopleToLentMoneyTo();
+    this.checkIfThereAreAnyDebtors();
     this.loansForm.reset();
     localStorage.setItem('people', JSON.stringify(this.people));
   }
+
   lentMoneyTo() {
-    //total amount of money to owe
-    this.person.owes.totalAmount =
-      this.person.owes.totalAmount + this.loansForm.value.borrowFromAmount;
-
-    //!make new object in list of people who borrowed money to the person
-    this.person.owes.amountToOnePerson.push({
-      amount: this.loansForm.value.borrowFromAmount,
-      name: this.loansForm.value.borrowFrom.name,
-    });
-
     //total amount of money to lent
-    this.loansForm.value.borrowFrom.lent.totalAmount =
-      this.loansForm.value.borrowFrom.lent.totalAmount +
-      +this.loansForm.value.borrowFromAmount;
+    this.person.lent.totalAmount =
+      this.person.lent.totalAmount + this.loansForm.value.lentToAmount;
 
-    //!make new object in the list of people a person borrowed money to
-    this.loansForm.value.borrowFrom.lent.amountToOnePerson.push({
-      amount: this.loansForm.value.borrowFromAmount,
-      name: this.person.name,
-    });
+    if (
+      //entry with this name already exists in the list
+      this.personCreditHistoryService.checkWhetherSuchEntryExistsInAList(
+        this.person.lent.amountToOnePerson,
+        this.loansForm.value.lentTo.name
+      )
+    ) {
+      //amount of money for this entry increases by amount of money from input field
+      this.personCreditHistoryService.increaseAmountInEntry(
+        this.person.lent.amountToOnePerson,
+        this.loansForm.value.lentTo.name,
+        this.loansForm.value.lentToAmount
+      );
+    } else {
+      //make a new entry in the list of people who the person borrowed money to
+      this.personCreditHistoryService.makeNewEntryInListOfAmountAndOerson(
+        this.person.lent.amountToOnePerson,
+        this.loansForm.value.lentToAmount,
+        this.loansForm.value.lentTo.name
+      );
+    }
+    //total amount of money to owe
+    this.loansForm.value.lentTo.owes.totalAmount =
+      this.loansForm.value.lentTo.owes.totalAmount +
+      +this.loansForm.value.lentToAmount;
 
-    //!esli hothat odolzhitj vtoroj raz?????????????????????????????????????????????????????
-
-    // this.personCreditHistoryService.calculations(
-    //   this.people,
-    //   this.person,
-    //   this.loansForm.value.borrowFrom,
-    //   this.loansForm.value.borrowFromAmount,
-    //   this.loansForm.value.borrowFrom.lent,
-    //   this.person.owes
-    // );
+    if (
+      //entry with this name already exists in the list
+      this.personCreditHistoryService.checkWhetherSuchEntryExistsInAList(
+        this.loansForm.value.lentTo.owes.amountToOnePerson,
+        this.person.name
+      )
+    ) {
+      //amount of money for this entry increases by amount of money from input field
+      this.personCreditHistoryService.increaseAmountInEntry(
+        this.loansForm.value.lentTo.owes.amountToOnePerson,
+        this.person.name,
+        this.loansForm.value.lentToAmount
+      );
+    } else {
+      //make new entry in the list of people a person owes money from
+      this.personCreditHistoryService.makeNewEntryInListOfAmountAndOerson(
+        this.loansForm.value.lentTo.owes.amountToOnePerson,
+        this.loansForm.value.lentToAmount,
+        this.person.name
+      );
+    }
     this.checkIfThereIsADept();
+    this.checkIfThereAreAnyDebtors();
     this.findPeopleToReturnMoneyTo();
+    this.findPeopleToBorrowMoneyFrom();
+    this.findPeopleToReceiveMoneyFrom()
     this.loansForm.reset();
+    localStorage.setItem('people', JSON.stringify(this.people));
   }
 
   payBackTheDeptToPerson() {
-    // this.personCreditHistoryService.calculations(
-    //   this.people,
-    //   this.person,
-    //   this.loansForm.value.returnMoneyTo,
-    //   this.loansForm.value.returnMoneyToAmount,
-    //   this.loansForm.value.returnMoneyTo.owes,
-    //   this.person.lent
-    // );
     //informacija po konkretnomu cheloveku, kotorogo ja selektnula na vozvrat - skoljko ja emu dolzhna i ego imja
     let owesDataToExactPerson = this.person.owes.amountToOnePerson.find(
       (owesData) => owesData.name === this.loansForm.value.returnMoneyTo.name
@@ -341,15 +348,63 @@ export class NameInputComponent implements OnInit {
     localStorage.setItem('people', JSON.stringify(this.people));
   }
 
+  receiveDeptFromPerson() {}
+
   checkIfThereIsADept() {
     if (this.person.owes.totalAmount > 0) {
       this.personHasDept = true;
     }
   }
 
+  checkIfThereAreAnyDebtors() {
+    if (this.person.lent.totalAmount > 0) {
+      this.personHasDebtors = true;
+    }
+  }
+
   findPeopleToReturnMoneyTo() {
-    this.peopleToSelectToReturnMoney = this.people.filter(
-      (human) => human.lent.totalAmount > 0 && human.name !== this.person.name
+    //find lenders' names
+    let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
+      this.person.owes.amountToOnePerson
+    );
+    //find people who will be present in 'returnMoneyTo' select options
+    this.peopleToReturnMoneyTo = this.people.filter(
+      (human) => lenders.includes(human.name) && human.name != this.person.name
+    );
+  }
+
+  findPeopleToReceiveMoneyFrom() {
+    //find debtors' names
+    let deptors = this.personCreditHistoryService.findNamesFromOwesOrLentList(
+      this.person.lent.amountToOnePerson
+    );
+    //find people who will be present in 'receiveMoneyFrom' select options
+    this.peopleToReceiveMoneyFrom = this.people.filter(
+      (human) => deptors.includes(human.name) && human.name != this.person.name
+    );
+  }
+
+  findPeopleToBorrowMoneyFrom() {
+    //find debtors' names
+    let debtors = this.personCreditHistoryService.findNamesFromOwesOrLentList(
+      this.person.lent.amountToOnePerson
+    );
+
+    //find people who will be present in 'borrowFrom' select options
+    this.peopleToBorrowMoneyFrom = this.people.filter(
+      (human) => !debtors.includes(human.name) && human.name != this.person.name
+    );
+  }
+
+  findPeopleToLentMoneyTo() {
+    //find lenders' names
+    let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
+      this.person.owes.amountToOnePerson
+    );
+
+    //find people who will be present in 'lentMoneyTo' select options
+    this.peopleToLentMoneyTo = this.people.filter(
+      (human) => !lenders.includes(human.name) && human.name != this.person.name
     );
   }
 }

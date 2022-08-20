@@ -1,4 +1,4 @@
-<form class="form" [formGroup]="nameForm">
+<form class="form" [formGroup]="loansForm" (ngSubmit)="onSubmit()">
   <label for="mainPerson">Select a person</label>
   <select formControlName="mainPerson" id="mainPerson">
     <option *ngFor="let person of people" [ngValue]="person">
@@ -6,7 +6,7 @@
     </option>
   </select>
   <button
-    [disabled]="!nameForm.valid"
+    [disabled]="!loansForm.valid"
     class="button"
     (click)="findPerson()"
     type="button"
@@ -47,9 +47,9 @@
       </div>
       <div class="input__container">
         <label class="label" for="borrowFromAmount">How much? </label>
-        <input formControlName="borrowFromAmount" type="text" />
+        <input formControlName="borrowFromAmount" type="number" />
       </div>
-      <button (click)="borrowFromPerson()">YES</button>
+      <button type="button" (click)="borrowFromPerson()">YES</button>
     </div>
     <div>
       <div>This person wants to</div>
@@ -63,9 +63,9 @@
       </div>
       <div class="input__container">
         <label class="label" for="LentToAmount">How much? </label>
-        <input formControlName="LentToAmount" type="text" />
+        <input formControlName="LentToAmount" type="number" />
       </div>
-      <button (click)="borrowFromPerson()">YES</button>
+      <button type="button" (click)="borrowFromPerson()">YES</button>
     </div>
     <div *ngIf="personHasDept">
       <div>This person wants to</div>
@@ -82,9 +82,10 @@
       </div>
       <div class="input__container">
         <label class="label" for="returnMoneyToAmount">How much? </label>
-        <input formControlName="returnMoneyToAmount" type="text" />
+        <input formControlName="returnMoneyToAmount" type="number" />
       </div>
-      <button (click)="payBackTheDeptToPerson()">YES</button>
+      <button type="button" (click)="payBackTheDeptToPerson()">YES</button>
     </div>
   </div>
+  <button [disabled]="!loansForm.valid">that's it</button>
 </form>

@@ -51,7 +51,7 @@
       </div>
       <button type="button" (click)="borrowFromPerson()">YES</button>
     </div>
-    <div *ngIf="peopleToLentMoneyTo?.length">
+    <div>
       <div>This person wants to</div>
       <div class="input__container">
         <label class="label" for="lentTo">Give money to </label>
@@ -89,7 +89,7 @@
 
 
 
-    <div *ngIf="peopleToReceiveMoneyFrom?.length">
+    <div>
       <div>This person wants to</div>
       <div class="input__container">
         <label class="label" for="receiveMoneyBack">Receive money from </label>

@@ -77,7 +77,7 @@ export class NameInputComponent implements OnInit {
     this.checkIfThereIsADept();
     this.checkIfThereAreAnyDebtors();
     this.findPeopleToReturnMoneyTo();
-    this.findPeopleToReceiveMoneyFrom()
+    this.findPeopleToReceiveMoneyFrom();
     this.isChosen = true;
   }
 
@@ -133,22 +133,6 @@ export class NameInputComponent implements OnInit {
         this.person.name
       );
     }
-
-    // if (
-    //   //entry with this name already exists in the lent list of this.person
-    //   this.personCreditHistoryService.checkWhetherSuchEntryExistsInAList(
-    //     this.person.lent.amountToOnePerson,
-    //     this.loansForm.value.borrowFrom.name
-    //   )
-    // ) {
-    //   //amount of money for this entry decreases by amount of money from input field
-    //   this.personCreditHistoryService.increaseAmountInEntry(
-    //     this.person.lent.amountToOnePerson,
-    //     this.loansForm.value.borrowFrom.name,
-    //     this.loansForm.value.borrowFromAmount
-    //   );
-    // } else {
-    // }
 
     this.checkIfThereIsADept();
     this.checkIfThereAreAnyDebtors();
@@ -215,34 +199,36 @@ export class NameInputComponent implements OnInit {
     this.checkIfThereAreAnyDebtors();
     this.findPeopleToReturnMoneyTo();
     this.findPeopleToBorrowMoneyFrom();
-    this.findPeopleToReceiveMoneyFrom()
+    this.findPeopleToReceiveMoneyFrom();
     this.loansForm.reset();
     localStorage.setItem('people', JSON.stringify(this.people));
   }
 
   payBackTheDeptToPerson() {
-    //informacija po konkretnomu cheloveku, kotorogo ja selektnula na vozvrat - skoljko ja emu dolzhna i ego imja
+    //person's name, who was selected to return money to and initial dept amount to him
     let owesDataToExactPerson = this.person.owes.amountToOnePerson.find(
       (owesData) => owesData.name === this.loansForm.value.returnMoneyTo.name
     );
 
+    //main person name and his/her initial dept amount to the person which was selected to return money to
     let lentDataToExactPerson =
       this.loansForm.value.returnMoneyTo.lent.amountToOnePerson.find(
         (lentData: { name: string }) => lentData.name === this.person.name
       );
 
-    //summa kotoruju ja emu dolzhna minus summa iz inputa
+    //calculating the sum main person owes to the selected person after paying a dept
     if (owesDataToExactPerson)
       if (
+        //the amount main person returns is less or equal to the amount he/she owes
         this.loansForm.value.returnMoneyToAmount <=
         +owesDataToExactPerson.amount
       ) {
-        //dolg = dolg - summa iz inputa
+        //selected person's loan amount minus amount main person returns
         owesDataToExactPerson.amount =
           owesDataToExactPerson.amount -
           this.loansForm.value.returnMoneyToAmount;
 
-        //iz obschej summa dolga vichitaem summu inputa
+        //total amount of all loans minus amount main person returns
         this.person.owes.totalAmount =
           this.person.owes.totalAmount -
           this.loansForm.value.returnMoneyToAmount;
@@ -250,21 +236,12 @@ export class NameInputComponent implements OnInit {
         //remove empty entry
         this.personCreditHistoryService.removeEmptyEntry(this.person.owes);
 
-        //cheloveku, kotoromu vernuli dolg,
-        //v razdele odolzhennie ubiraem etu summu i udaljaem pustoj objekt////////////
-
-        // let lentDataToExactPerson =
-        //   this.loansForm.value.returnMoneyTo.lent.amountToOnePerson.find(
-        //     (lentData: { name: string }) => lentData.name === this.person.name
-        //   );
-        // console.log('lent', lentDataToExactPerson);
-
-        //odolzhennie = odolzhennie - summa iz inputa
+        //main person dept amount to the selected person minus returned amount
         lentDataToExactPerson.amount =
           lentDataToExactPerson.amount -
           this.loansForm.value.returnMoneyToAmount;
 
-        //odolzhennie(obschaja summa) = odolzhennie(objschaja summa) - summa iz inputa
+        //calculating total dept amount
         this.loansForm.value.returnMoneyTo.lent.totalAmount =
           this.loansForm.value.returnMoneyTo.lent.totalAmount -
           this.loansForm.value.returnMoneyToAmount;
@@ -274,14 +251,14 @@ export class NameInputComponent implements OnInit {
           this.loansForm.value.returnMoneyTo.lent
         );
       } else {
-        //dolg stiraetsa, a raznica dobavljaetsa v odolzhennie i v dolg drugomu
-        //vichisljaem raznicu (polozhiteljnoe chislo)
+        //amount to return is bigger than dept amount
 
+        //calculating overpay
         const overpay =
           this.loansForm.value.returnMoneyToAmount -
           owesDataToExactPerson.amount;
 
-        //dobavljaem raznicu v odolzhennie
+        //overpay goes to total lent amount of main person
         this.person.lent.totalAmount = this.person.lent.totalAmount + overpay;
 
         //make new entry in the list of people a person borrowed money to
@@ -291,59 +268,56 @@ export class NameInputComponent implements OnInit {
           this.loansForm.value.returnMoneyTo.name
         );
 
-        //umenjshaem obschij dolg na summu dolga tomu cheloveku
+        //calculating total owes amount
         this.person.owes.totalAmount =
           this.person.owes.totalAmount - owesDataToExactPerson.amount;
 
-        // udaljaem amount kotorij on dolzhen tomu cheloveku
+        //dept to the selected person is removed
         owesDataToExactPerson.amount = 0;
 
-        //esli tot chelovek nam odalzhival
+        //calculating residual dept
         if (lentDataToExactPerson) {
-          //esli summa dolga boljshe pereplati, to
+          //main person's dept amount is bigger than overpay
           if (lentDataToExactPerson.amount > overpay) {
+            //dept decreases
             lentDataToExactPerson.amount =
               lentDataToExactPerson.amount - overpay;
           } else {
-            //to summi dolga ne suschestvuet bolee
+            //dept disappears
             lentDataToExactPerson.amount = 0;
+            //remove empty entry
+            this.personCreditHistoryService.removeEmptyEntry(this.person.owes);
           }
-        } //!NADO LI IF?
-
-        //zapisivaem pereplatu v obschij dolg
+        }
+        //overpay goes to total owes amount of selected person
         this.loansForm.value.returnMoneyTo.owes.totalAmount =
           this.loansForm.value.returnMoneyTo.owes.totalAmount + overpay;
 
-        //generiruem object dolga
+        //generating new owes entry
         this.loansForm.value.returnMoneyTo.owes.amountToOnePerson.push({
           amount: overpay,
           name: this.person.name,
         });
-        //esli mi emu odalzhivali
-        if (owesDataToExactPerson) {
-          this.loansForm.value.returnMoneyTo.lent.totalAmount =
-            this.loansForm.value.returnMoneyTo.lent.totalAmount - overpay;
-          //esli summa odolzhennih deneg boljshe pereplati, to
-          if (owesDataToExactPerson.amount > overpay) {
-            owesDataToExactPerson.amount =
-              owesDataToExactPerson.amount - overpay;
-          } else {
-            //to summi dolga ne suschestvuet bolee
-            owesDataToExactPerson.amount = 0;
-          }
-        }
+
+        //calculating total selected person's lent amount
+        this.loansForm.value.returnMoneyTo.lent.totalAmount =
+          this.loansForm.value.returnMoneyTo.lent.totalAmount -
+          this.loansForm.value.returnMoneyToAmount;
+        this.loansForm.value.returnMoneyTo.lent.totalAmount < 0
+          ? (this.loansForm.value.returnMoneyTo.lent.totalAmount = 0)
+          : (this.loansForm.value.returnMoneyTo.lent.totalAmount =
+              this.loansForm.value.returnMoneyTo.lent.totalAmount - overpay);
+
+        //remove empty entry
+        this.personCreditHistoryService.removeEmptyEntry(
+          this.loansForm.value.returnMoneyTo.lent
+        );
       }
-    //remove empty entry
-    this.personCreditHistoryService.removeEmptyEntry(
-      this.loansForm.value.returnMoneyTo.lent
-    );
-
-    // //ubriraem nulevoj objekt
-    // this.loansForm.value.returnMoneyTo.lent.amountToOnePerson =
-    //   this.loansForm.value.returnMoneyTo.lent.amountToOnePerson.filter(
-    //     (lentData: { amount: number }) => lentData.amount !== 0
-    //   );
-
+    this.findPeopleToBorrowMoneyFrom();
+    this.findPeopleToLentMoneyTo();
+    this.checkIfThereIsADept();
+    this.checkIfThereAreAnyDebtors();
+    this.findPeopleToReceiveMoneyFrom();
     this.loansForm.reset();
     localStorage.setItem('people', JSON.stringify(this.people));
   }
@@ -401,10 +375,17 @@ export class NameInputComponent implements OnInit {
     let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.owes.amountToOnePerson
     );
+    //find debtors' names
+    let debtors = this.personCreditHistoryService.findNamesFromOwesOrLentList(
+      this.person.lent.amountToOnePerson
+    );
 
     //find people who will be present in 'lentMoneyTo' select options
     this.peopleToLentMoneyTo = this.people.filter(
-      (human) => !lenders.includes(human.name) && human.name != this.person.name
+      (human) =>
+        !lenders.includes(human.name) &&
+        !debtors.includes(human.name) &&
+        human.name != this.person.name
     );
   }
 }

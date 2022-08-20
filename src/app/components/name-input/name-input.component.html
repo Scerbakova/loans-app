@@ -13,7 +13,7 @@
   >
     Find
   </button>
-  <div *ngIf="isChosen" class="dati">
+  <div *ngIf="isChosen" class="data">
     <div>
       <div>
         You have selected <span>{{ person.name }}</span>
@@ -67,7 +67,7 @@
       </div>
       <button type="button" (click)="lentMoneyTo()">YES</button>
     </div>
-    <div *ngIf="personHasDept">
+    <div>
       <div>This person wants to</div>
       <div class="input__container">
         <label class="label" for="returnMoneyTo">Return money to </label>
@@ -106,8 +106,7 @@
         <label class="label" for="receiveMoneyBackAmount">How much? </label>
         <input formControlName="receiveMoneyBackAmount" type="number" />
       </div>
-      <button type="button" (click)="payBackTheDeptToPerson()">YES</button>
+      <button type="button" (click)="receiveDeptFromPerson()">YES</button>
     </div>
   </div>
-  <button [disabled]="!loansForm.valid">that's it</button>
 </form>

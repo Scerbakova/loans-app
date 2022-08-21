@@ -2,3 +2,19 @@
   display: flex;
   column-gap: 150px;
 }
+
+.owes {
+  background-color: antiquewhite;
+}
+
+.personHasDebt {
+  background-color: rgb(192, 77, 92);
+}
+
+.lent {
+  background-color: antiquewhite;
+}
+
+.personHasDebtors {
+  background-color: rgb(90, 192, 77);
+}

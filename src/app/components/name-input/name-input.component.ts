@@ -1,11 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
@@ -17,20 +10,15 @@ import { PersonCreditHistoryService } from 'src/app/person-credit-history.servic
   providers: [PersonCreditHistoryService],
 })
 export class NameInputComponent implements OnInit {
-  @ViewChild('inputQuestion') inputQuestion: ElementRef | undefined;
-
-  @Output()
-  findPersonEvent = new EventEmitter();
-
   loansForm: FormGroup = this.fb.group({});
   people!: Person[];
   peopleToBorrowMoneyFrom!: Person[];
-  peopleToLentMoneyTo!: Person[];
+  peopleToLendMoneyTo!: Person[];
   peopleToReturnMoneyTo!: Person[];
   peopleToReceiveMoneyFrom!: Person[];
   person!: Person;
   isChosen = false;
-  personHasDept = false;
+  personHasDebt = false;
   personHasDebtors = false;
 
   constructor(
@@ -53,12 +41,12 @@ export class NameInputComponent implements OnInit {
     this.loansForm = this.fb.group({
       mainPerson: ['', Validators.required],
       borrowFrom: [''],
-      lentTo: [''],
+      lendTo: [''],
       returnMoneyTo: [''],
       receiveMoneyBack: [''],
 
       borrowFromAmount: null,
-      lentToAmount: null,
+      lendToAmount: null,
       returnMoneyToAmount: null,
       receiveMoneyBackAmount: null,
     });
@@ -88,9 +76,9 @@ export class NameInputComponent implements OnInit {
   lentMoneyTo() {
     this.personCreditHistoryService.lentMoneyTo(
       this.person,
-      this.loansForm.value.lentToAmount,
-      this.loansForm.value.lentTo.name,
-      this.loansForm.value.lentTo.owes
+      this.loansForm.value.lendToAmount,
+      this.loansForm.value.lendTo.name,
+      this.loansForm.value.lendTo.owes
     );
 
     this.onConfirm();
@@ -102,7 +90,7 @@ export class NameInputComponent implements OnInit {
       this.loansForm.value.returnMoneyTo.name,
       this.loansForm.value.returnMoneyToAmount,
       this.loansForm.value.returnMoneyTo.lent,
-      this.loansForm.value.returnMoneyTo.owes,
+      this.loansForm.value.returnMoneyTo.owes
     );
     this.onConfirm();
   }
@@ -120,8 +108,7 @@ export class NameInputComponent implements OnInit {
   }
 
   onConfirm() {
-    this.findPeopleToBorrowMoneyFrom();
-    this.findPeopleToLentMoneyTo();
+    this.findPeopleToLentMoneyToOrBorrowFrom();
     this.checkIfThereIsADept();
     this.checkIfThereAreAnyDebtors();
     this.findPeopleToReturnMoneyTo();
@@ -133,7 +120,7 @@ export class NameInputComponent implements OnInit {
   //!
   checkIfThereIsADept() {
     if (this.person.owes.totalAmount > 0) {
-      this.personHasDept = true;
+      this.personHasDebt = true;
     }
   }
 
@@ -166,19 +153,7 @@ export class NameInputComponent implements OnInit {
     );
   }
 
-  findPeopleToBorrowMoneyFrom() {
-    //find debtors' names
-    let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
-      this.person.owes.amountToOnePerson
-    );
-
-    //find people who will be present in 'borrowFrom' select options
-    this.peopleToBorrowMoneyFrom = this.people.filter(
-      (human) => !lenders.includes(human.name) && human.name != this.person.name
-    );
-  }
-
-  findPeopleToLentMoneyTo() {
+  findPeopleToLentMoneyToOrBorrowFrom() {
     //find lenders' names
     let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.owes.amountToOnePerson
@@ -188,8 +163,15 @@ export class NameInputComponent implements OnInit {
       this.person.lent.amountToOnePerson
     );
 
-    //find people who will be present in 'lentMoneyTo' select options
-    this.peopleToLentMoneyTo = this.people.filter(
+    //find people who will be present in 'lendMoneyTo' select options
+    this.peopleToLendMoneyTo = this.people.filter(
+      (human) =>
+        !lenders.includes(human.name) &&
+        !debtors.includes(human.name) &&
+        human.name != this.person.name
+    );
+    //find people who will be present in 'borrowMoneyFrom' select options
+    this.peopleToBorrowMoneyFrom = this.people.filter(
       (human) =>
         !lenders.includes(human.name) &&
         !debtors.includes(human.name) &&

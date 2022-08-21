@@ -4,12 +4,12 @@ import { Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
 
 @Component({
-  selector: 'app-name-input',
-  templateUrl: './name-input.component.html',
-  styleUrls: ['./name-input.component.css'],
+  selector: 'loans',
+  templateUrl: './loans.component.html',
+  styleUrls: ['./loans.component.css'],
   providers: [PersonCreditHistoryService],
 })
-export class NameInputComponent implements OnInit {
+export class LoansComponent implements OnInit {
   loansForm: FormGroup = this.fb.group({});
   people!: Person[];
   peopleToBorrowMoneyFrom!: Person[];

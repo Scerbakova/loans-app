@@ -22,7 +22,12 @@
       <div>
         You have selected <span>{{ person.name }}</span>
       </div>
-      <div class="lent" [ngClass]="{'personHasDebt': personHasDebt === true}">
+      <div
+        [ngClass]="{
+          personHasDebt: personHasDebt === true,
+          lent: personHasDebt === false
+        }"
+      >
         This person owes
         <span>{{ person.owes.totalAmount }}</span>
         <div *ngFor="let amountToPerson of person.owes.amountToOnePerson">
@@ -30,7 +35,12 @@
           <span>{{ amountToPerson.name }}</span>
         </div>
       </div>
-      <div class="owes" [ngClass]="{'personHasDebtors': personHasDebtors === true}">
+      <div
+        [ngClass]="{
+          personHasDebtors: personHasDebtors === true,
+          owes: personHasDebtors === false
+        }"
+      >
         This person lent
         <span>{{ person.lent.totalAmount }}</span>
         <div *ngFor="let amountToPerson of person.lent.amountToOnePerson">

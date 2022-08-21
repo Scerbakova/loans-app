@@ -109,7 +109,7 @@ export class NameInputComponent implements OnInit {
 
   onConfirm() {
     this.findPeopleToLentMoneyToOrBorrowFrom();
-    this.checkIfThereIsADept();
+    this.checkIfThereIsADebt();
     this.checkIfThereAreAnyDebtors();
     this.findPeopleToReturnMoneyTo();
     this.findPeopleToReceiveMoneyFrom();
@@ -117,14 +117,12 @@ export class NameInputComponent implements OnInit {
     localStorage.setItem('people', JSON.stringify(this.people));
   }
 
-  //!
-  checkIfThereIsADept() {
+  checkIfThereIsADebt() {
     if (this.person.owes.totalAmount > 0) {
       this.personHasDebt = true;
     }
   }
 
-  //!
   checkIfThereAreAnyDebtors() {
     if (this.person.lent.totalAmount > 0) {
       this.personHasDebtors = true;

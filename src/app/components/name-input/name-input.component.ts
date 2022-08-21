@@ -79,8 +79,7 @@ export class NameInputComponent implements OnInit {
       this.person,
       this.loansForm.value.borrowFromAmount,
       this.loansForm.value.borrowFrom.name,
-      this.loansForm.value.borrowFrom.lent.totalAmount,
-      this.loansForm.value.borrowFrom.lent.amountToOnePerson
+      this.loansForm.value.borrowFrom.lent
     );
 
     this.onConfirm();
@@ -91,8 +90,7 @@ export class NameInputComponent implements OnInit {
       this.person,
       this.loansForm.value.lentToAmount,
       this.loansForm.value.lentTo.name,
-      this.loansForm.value.lentTo.owes.totalAmount,
-      this.loansForm.value.lentTo.owes.amountToOnePerson
+      this.loansForm.value.lentTo.owes
     );
 
     this.onConfirm();
@@ -102,15 +100,10 @@ export class NameInputComponent implements OnInit {
     this.personCreditHistoryService.payBackTheDeptToPerson(
       this.person,
       this.loansForm.value.returnMoneyTo.name,
-      this.loansForm.value.returnMoneyTo.lent.amountToOnePerson,
       this.loansForm.value.returnMoneyToAmount,
-      this.loansForm.value.returnMoneyTo.lent.totalAmount,
       this.loansForm.value.returnMoneyTo.lent,
-      this.loansForm.value.returnMoneyTo.name,
       this.loansForm.value.returnMoneyTo.owes,
-      this.loansForm.value.returnMoneyTo.owes.amountToOnePerson
     );
-
     this.onConfirm();
   }
 
@@ -119,11 +112,8 @@ export class NameInputComponent implements OnInit {
       this.person,
       this.loansForm.value.receiveMoneyBack.owes,
       this.loansForm.value.receiveMoneyBack.name,
-      this.loansForm.value.receiveMoneyBack.owes.totalAmount,
-      this.loansForm.value.receiveMoneyBack.owes.amountToOnePerson,
       this.loansForm.value.receiveMoneyBackAmount,
-      this.loansForm.value.receiveMoneyBack.lent.totalAmount,
-      this.loansForm.value.receiveMoneyBack.lent.amountToOnePerson
+      this.loansForm.value.receiveMoneyBack.lent
     );
 
     this.onConfirm();
@@ -140,12 +130,14 @@ export class NameInputComponent implements OnInit {
     localStorage.setItem('people', JSON.stringify(this.people));
   }
 
+  //!
   checkIfThereIsADept() {
     if (this.person.owes.totalAmount > 0) {
       this.personHasDept = true;
     }
   }
 
+  //!
   checkIfThereAreAnyDebtors() {
     if (this.person.lent.totalAmount > 0) {
       this.personHasDebtors = true;
@@ -176,13 +168,13 @@ export class NameInputComponent implements OnInit {
 
   findPeopleToBorrowMoneyFrom() {
     //find debtors' names
-    let debtors = this.personCreditHistoryService.findNamesFromOwesOrLentList(
-      this.person.lent.amountToOnePerson
+    let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
+      this.person.owes.amountToOnePerson
     );
 
     //find people who will be present in 'borrowFrom' select options
     this.peopleToBorrowMoneyFrom = this.people.filter(
-      (human) => !debtors.includes(human.name) && human.name != this.person.name
+      (human) => !lenders.includes(human.name) && human.name != this.person.name
     );
   }
 

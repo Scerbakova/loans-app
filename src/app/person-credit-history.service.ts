@@ -101,173 +101,107 @@ export class PersonCreditHistoryService {
 
   borrowFromPerson(
     person: Person,
-    loanFormValueNumber: number,
-    loanFormValueName: string,
-    loanFormValueTotalAmount: number,
-    loanFormValueAmountToOnePerson: AmountAndPerson[]
+    formNumber: number,
+    formName: string,
+    formPerson: Amount
   ) {
     //total amount of money to owe
-    person.owes.totalAmount = person.owes.totalAmount + loanFormValueNumber;
+    person.owes.totalAmount = person.owes.totalAmount + formNumber;
 
-    if (
-      //entry with this name already exists in the owes list of this.person
-      this.checkWhetherSuchEntryExistsInAList(
-        person.owes.amountToOnePerson,
-        loanFormValueName
-      )
-    ) {
-      //amount of money for this entry increases by amount of money from input field
-      this.increaseAmountInEntry(
-        person.owes.amountToOnePerson,
-        loanFormValueName,
-        loanFormValueNumber
-      );
-    } else {
-      //make a new entry in the owes list
-      this.makeNewEntryInListOfAmountAndOerson(
-        person.owes.amountToOnePerson,
-        loanFormValueNumber,
-        loanFormValueName
-      );
-    }
+    //make a new entry in the owes list
+    this.makeNewEntryInListOfAmountAndOerson(
+      person.owes.amountToOnePerson,
+      formNumber,
+      formName
+    );
+    // }
     //total amount of money to lent
-    loanFormValueTotalAmount = loanFormValueTotalAmount + loanFormValueNumber;
+    formPerson.totalAmount = formPerson.totalAmount + formNumber;
 
-    if (
-      //entry with this name already exists in the lent list of another person
-      this.checkWhetherSuchEntryExistsInAList(
-        loanFormValueAmountToOnePerson,
-        person.name
-      )
-    ) {
-      //amount of money for this entry increases by amount of money from input field
-      this.increaseAmountInEntry(
-        loanFormValueAmountToOnePerson,
-        person.name,
-        loanFormValueNumber
-      );
-    } else {
-      //make new entry in the lent list
-      this.makeNewEntryInListOfAmountAndOerson(
-        loanFormValueAmountToOnePerson,
-        loanFormValueNumber,
-        person.name
-      );
-    }
+    //make new entry in the lent list
+    this.makeNewEntryInListOfAmountAndOerson(
+      formPerson.amountToOnePerson,
+      formNumber,
+      person.name
+    );
   }
 
   lentMoneyTo(
     person: Person,
-    loanFormValueNumber: number,
-    loanFormValueName: string,
-    loanFormValueTotalAmount: number,
-    loanFormValueAmountToOnePerson: AmountAndPerson[]
+    formNumber: number,
+    formName: string,
+    formPerson: Amount
   ) {
     //total amount of money to lent
-    person.lent.totalAmount = person.lent.totalAmount + loanFormValueNumber;
+    person.lent.totalAmount = person.lent.totalAmount + formNumber;
 
-    if (
-      //entry with this name already exists in the list
-      this.checkWhetherSuchEntryExistsInAList(
-        person.lent.amountToOnePerson,
-        loanFormValueName
-      )
-    ) {
-      //amount of money for this entry increases by amount of money from input field
-      this.increaseAmountInEntry(
-        person.lent.amountToOnePerson,
-        loanFormValueName,
-        loanFormValueNumber
-      );
-    } else {
-      //make a new entry in the list of people who the person borrowed money to
-      this.makeNewEntryInListOfAmountAndOerson(
-        person.lent.amountToOnePerson,
-        loanFormValueNumber,
-        loanFormValueName
-      );
-    }
+    //make a new entry in the list of people who the person borrowed money to
+    this.makeNewEntryInListOfAmountAndOerson(
+      person.lent.amountToOnePerson,
+      formNumber,
+      formName
+    );
+
     //total amount of money to owe
-    loanFormValueTotalAmount = loanFormValueTotalAmount + loanFormValueNumber;
+    formPerson.totalAmount = formPerson.totalAmount + formNumber;
 
-    if (
-      //entry with this name already exists in the list
-      this.checkWhetherSuchEntryExistsInAList(
-        loanFormValueAmountToOnePerson,
-        person.name
-      )
-    ) {
-      //amount of money for this entry increases by amount of money from input field
-      this.increaseAmountInEntry(
-        loanFormValueAmountToOnePerson,
-        person.name,
-        loanFormValueNumber
-      );
-    } else {
-      //make new entry in the list of people a person owes money from
-      this.makeNewEntryInListOfAmountAndOerson(
-        loanFormValueAmountToOnePerson,
-        loanFormValueNumber,
-        person.name
-      );
-    }
+    //make new entry in the list of people a person owes money from
+    this.makeNewEntryInListOfAmountAndOerson(
+      formPerson.amountToOnePerson,
+      formNumber,
+      person.name
+    );
   }
 
   payBackTheDeptToPerson(
     person: Person,
-    loanFormValueName: string,
-    loanFormValueAmountToOnePerson: AmountAndPerson[],
-    loanFormValueReturnMoneyToAmount: number,
-    loanFormValueTotalAmountToLent: number,
-    loansFormValueReturnMoneyToLent: Amount,
-    loansFormValueReturnMoneyToName: string,
-    loansFormValueOwes: Amount,
-    loansFormValueOwesAmountToOnePerson: AmountAndPerson[]
+    formName: string,
+    formNumber: number,
+    formPersonLent: Amount,
+    formPersonOwes: Amount
   ) {
     //person's name, who was selected to return money to and initial dept amount to him
     let owesDataToExactPerson = person.owes.amountToOnePerson.find(
-      (owesData: { name: string }) => owesData.name === loanFormValueName
+      (owesData: { name: string }) => owesData.name === formName
     );
 
     //main person name and his/her initial dept amount to the person which was selected to return money to
-    let lentDataToExactPerson = loanFormValueAmountToOnePerson.find(
+    let lentDataToExactPerson = formPersonLent.amountToOnePerson.find(
       (lentData: { name: string }) => lentData.name === person.name
     );
 
     //calculating the sum main person owes to the selected person after paying a dept
-    if (owesDataToExactPerson)
+    if (owesDataToExactPerson) {
       if (
         //the amount main person returns is less or equal to the amount he/she owes
-        loanFormValueReturnMoneyToAmount <= +owesDataToExactPerson.amount
+        formNumber <= owesDataToExactPerson.amount
       ) {
         //selected person's loan amount minus amount main person returns
         owesDataToExactPerson.amount =
-          owesDataToExactPerson.amount - loanFormValueReturnMoneyToAmount;
+          owesDataToExactPerson.amount - formNumber;
 
         //total amount of all loans minus amount main person returns
-        person.owes.totalAmount =
-          person.owes.totalAmount - loanFormValueReturnMoneyToAmount;
+        person.owes.totalAmount = person.owes.totalAmount - formNumber;
 
         //remove empty entry
         this.removeEmptyEntry(person.owes);
 
-        //main person dept amount to the selected person minus returned amount
-        if (lentDataToExactPerson)
+        //selected person dept amount to the main person minus returned amount
+        if (lentDataToExactPerson) {
           lentDataToExactPerson.amount =
-            lentDataToExactPerson.amount - loanFormValueReturnMoneyToAmount;
+            lentDataToExactPerson.amount - formNumber;
 
-        //calculating total dept amount
-        loanFormValueTotalAmountToLent =
-          loanFormValueTotalAmountToLent - loanFormValueReturnMoneyToAmount;
+          //calculating total dept amount
+          formPersonLent.totalAmount = formPersonLent.totalAmount - formNumber;
 
-        //remove empty entry
-        this.removeEmptyEntry(loansFormValueReturnMoneyToLent);
+          //remove empty entry
+          this.removeEmptyEntry(formPersonLent);
+        }
       } else {
         //amount to return is bigger than dept amount
 
         //calculating overpay
-        const overpay =
-          loanFormValueReturnMoneyToAmount - owesDataToExactPerson.amount;
+        const overpay = formNumber - owesDataToExactPerson.amount;
 
         //overpay goes to total lent amount of main person
         person.lent.totalAmount = person.lent.totalAmount + overpay;
@@ -276,7 +210,7 @@ export class PersonCreditHistoryService {
         this.makeNewEntryInListOfAmountAndOerson(
           person.lent.amountToOnePerson,
           overpay,
-          loansFormValueReturnMoneyToName
+          formName
         );
 
         //calculating total owes amount
@@ -291,60 +225,55 @@ export class PersonCreditHistoryService {
         this.removeEmptyEntry(person.owes);
 
         //overpay goes to total owes amount of selected person
-        loansFormValueOwes.totalAmount = loansFormValueOwes.totalAmount + overpay;
+        formPersonOwes.totalAmount = formPersonOwes.totalAmount + overpay;
 
         //make a new entry in the owes list of selected person
         this.makeNewEntryInListOfAmountAndOerson(
-          loansFormValueOwesAmountToOnePerson,
+          formPersonOwes.amountToOnePerson,
           overpay,
           person.name
         );
 
         //calculating total selected person's lent amount
-        loanFormValueTotalAmountToLent <= loanFormValueReturnMoneyToAmount
-          ? (loanFormValueTotalAmountToLent = 0)
-          : (loanFormValueTotalAmountToLent =
-              loanFormValueTotalAmountToLent - overpay);
+        formPersonLent.totalAmount <= formNumber
+          ? (formPersonLent.totalAmount = 0)
+          : (formPersonLent.totalAmount = formPersonLent.totalAmount - overpay);
 
         //remove empty entry
-        this.removeEmptyEntry(loansFormValueReturnMoneyToLent);
+        this.removeEmptyEntry(formPersonLent);
       }
+    }
   }
 
   receiveDeptFromPerson(
     person: Person,
     formPersonOwes: Amount,
     formName: string,
-    formOwesTotalAmount: number,
-    formOwesTotalAmoutToOnePerson: AmountAndPerson[],
-    formAmount: number,
-    formLentTotalAmount: number,
-    formLentTotalAmoutToOnePerson: AmountAndPerson[]
+    formNumber: number,
+    formPersonLent: Amount
   ) {
     //main person name and the initial amount of money he/she lent to the selected person
-    let lentDataToExactPerson = formOwesTotalAmoutToOnePerson.find(
+    let lentDataToExactPerson = formPersonOwes.amountToOnePerson.find(
       (lentData: { name: string }) => lentData.name === person.name
     );
-    console.log('owes', lentDataToExactPerson);
 
     //selected person name and the amount he/she owes to the main person
     let owesDataToExactPerson = person.lent.amountToOnePerson.find(
       (owesData) => owesData.name === formName
     );
-    console.log('lent', owesDataToExactPerson);
 
     //calculating the selected person owes to the main person after he/she pays the dept
-    if (owesDataToExactPerson)
+    if (owesDataToExactPerson) {
       if (
         //the amount selected person returns is less or equal to the amount he/she owes
-        formAmount <= owesDataToExactPerson.amount
+        formNumber <= owesDataToExactPerson.amount
       ) {
         //main person's loan amount minus amount selected person returns
         owesDataToExactPerson.amount =
-          owesDataToExactPerson.amount - formAmount;
+          owesDataToExactPerson.amount - formNumber;
 
         //total amount of all loans minus amount selected person returns
-        person.lent.totalAmount = person.lent.totalAmount - formAmount;
+        person.lent.totalAmount = person.lent.totalAmount - formNumber;
 
         //remove empty entry
         this.removeEmptyEntry(person.lent);
@@ -352,10 +281,10 @@ export class PersonCreditHistoryService {
         //selected person's dept amount to the main person minus returned amount
         if (lentDataToExactPerson)
           lentDataToExactPerson.amount =
-            lentDataToExactPerson.amount - formAmount;
+            lentDataToExactPerson.amount - formNumber;
 
         //calculating total dept amount
-        formOwesTotalAmount = formOwesTotalAmount - formAmount;
+        formPersonOwes.totalAmount = formPersonOwes.totalAmount - formNumber;
 
         //remove empty entry
         this.removeEmptyEntry(formPersonOwes);
@@ -363,7 +292,7 @@ export class PersonCreditHistoryService {
         //amount to return is bigger than dept amount
 
         //calculating overpay
-        const overpay = formAmount - owesDataToExactPerson.amount;
+        const overpay = formNumber - owesDataToExactPerson.amount;
 
         //overpay goes to total owes amount of main person
         person.owes.totalAmount = person.owes.totalAmount + overpay;
@@ -376,7 +305,7 @@ export class PersonCreditHistoryService {
         );
 
         //calculating total lent amount
-        if (person.lent.totalAmount >= formAmount) {
+        if (person.lent.totalAmount >= formNumber) {
           person.lent.totalAmount =
             person.lent.totalAmount - owesDataToExactPerson.amount;
         } else {
@@ -392,22 +321,23 @@ export class PersonCreditHistoryService {
         this.removeEmptyEntry(person.lent);
 
         //overpay goes to total lent amount of selected person
-        formLentTotalAmount = formLentTotalAmount + overpay;
+        formPersonLent.totalAmount = formPersonLent.totalAmount + overpay;
 
         //make a new entry in the lent list of selected person
         this.makeNewEntryInListOfAmountAndOerson(
-          formLentTotalAmoutToOnePerson,
+          formPersonLent.amountToOnePerson,
           overpay,
           person.name
         );
 
         //calculating total selected person's owes amount
-        formOwesTotalAmount <= formAmount
-          ? (formOwesTotalAmount = 0)
-          : (formOwesTotalAmount = formOwesTotalAmount - overpay);
+        formPersonOwes.totalAmount <= formNumber
+          ? (formPersonOwes.totalAmount = 0)
+          : (formPersonOwes.totalAmount = formPersonOwes.totalAmount - overpay);
 
         //remove empty entry
         this.removeEmptyEntry(formPersonOwes);
       }
+    }
   }
 }

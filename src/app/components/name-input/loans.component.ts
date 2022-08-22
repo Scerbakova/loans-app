@@ -6,7 +6,7 @@ import { PersonCreditHistoryService } from 'src/app/person-credit-history.servic
 @Component({
   selector: 'loans',
   templateUrl: './loans.component.html',
-  styleUrls: ['./loans.component.css'],
+  styleUrls: ['./loans.component.scss'],
   providers: [PersonCreditHistoryService],
 })
 export class LoansComponent implements OnInit {
@@ -20,6 +20,7 @@ export class LoansComponent implements OnInit {
   isChosen = false;
   personHasDebt = false;
   personHasDebtors = false;
+  mainPerson = this.loansForm.get('mainPerson')
 
   constructor(
     private fb: FormBuilder,
@@ -35,6 +36,8 @@ export class LoansComponent implements OnInit {
       ) as Person[];
     }
     this.buidForm();
+    
+    this.loansForm.valueChanges.subscribe(newVal => console.log(newVal))
   }
 
   buidForm(): void {
@@ -51,6 +54,7 @@ export class LoansComponent implements OnInit {
       receiveMoneyBackAmount: null,
     });
   }
+
 
   onSubmit() {
     this.loansForm.reset();
@@ -109,24 +113,10 @@ export class LoansComponent implements OnInit {
 
   onConfirm() {
     this.findPeopleToLentMoneyToOrBorrowFrom();
-    this.checkIfThereIsADebt();
-    this.checkIfThereAreAnyDebtors();
     this.findPeopleToReturnMoneyTo();
     this.findPeopleToReceiveMoneyFrom();
     this.loansForm.reset();
     localStorage.setItem('people', JSON.stringify(this.people));
-  }
-
-  checkIfThereIsADebt() {
-    if (this.person.owes.totalAmount > 0) {
-      this.personHasDebt = true;
-    }
-  }
-
-  checkIfThereAreAnyDebtors() {
-    if (this.person.lent.totalAmount > 0) {
-      this.personHasDebtors = true;
-    }
   }
 
   findPeopleToReturnMoneyTo() {

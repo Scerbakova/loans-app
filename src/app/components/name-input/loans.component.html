@@ -1,59 +1,65 @@
 <form class="form" [formGroup]="loansForm" (ngSubmit)="onSubmit()">
-  <label for="mainPerson"
-    >Select a person
-    <select formControlName="mainPerson" id="mainPerson">
-      <option *ngFor="let person of people" [ngValue]="person">
-        {{ person.name }}
-      </option>
-    </select>
-  </label>
+  <div class="main__person--wrapper">
+    <label class="main__person--label" for="mainPerson">Select a person </label>
+    <div class="main__person--select-wrapper">
+      <select formControlName="mainPerson" id="mainPerson">
+        <option *ngFor="let person of people" [ngValue]="person">
+          {{ person.name }}
+        </option>
+      </select>
 
-  <button
-    [disabled]="!loansForm.valid"
-    class="button"
-    (click)="findPerson()"
-    type="button"
-  >
-    Find
-  </button>
+      <button
+        [disabled]="!loansForm.valid"
+        class="button"
+        (click)="findPerson()"
+        type="button"
+      >
+        Find
+      </button>
+    </div>
 
-  <div *ngIf="isChosen" class="data">
-    <div>
+    <div *ngIf="isChosen" class="data">
       <div>
-        You have selected <span>{{ person.name }}</span>
-      </div>
-      <div
-        [ngClass]="{
-          personHasDebt: personHasDebt === true,
-          lent: personHasDebt === false
-        }"
-      >
-        This person owes
-        <span>{{ person.owes.totalAmount }}</span>
-        <div *ngFor="let amountToPerson of person.owes.amountToOnePerson">
-          <span>{{ amountToPerson.amount }}</span> to
-          <span>{{ amountToPerson.name }}</span>
+        <div>
+          You have selected <span class="name">{{ person.name }}</span>
         </div>
-      </div>
-      <div
-        [ngClass]="{
-          personHasDebtors: personHasDebtors === true,
-          owes: personHasDebtors === false
-        }"
-      >
-        This person lent
-        <span>{{ person.lent.totalAmount }}</span>
-        <div *ngFor="let amountToPerson of person.lent.amountToOnePerson">
-          <span>{{ amountToPerson.amount }}</span> to
-          <span>{{ amountToPerson?.name }}</span>
+        <div class="lent">
+          This person
+          <span class="emphasized__text"
+            >owes {{ person.owes.totalAmount }}</span
+          >
+          <div>details:</div>
+          <div
+            class="details__owes"
+            *ngFor="let amountToPerson of person.owes.amountToOnePerson"
+          >
+            <span>{{ amountToPerson.amount }}</span> to
+            <span>{{ amountToPerson.name }}</span>
+          </div>
+        </div>
+        <div class="owes">
+          This person
+          <span class="emphasized__text"
+            >lent {{ person.lent.totalAmount }}</span
+          >
+          <div>details:</div>
+          <div
+            class="details__lent"
+            *ngFor="let amountToPerson of person.lent.amountToOnePerson"
+          >
+            <span>{{ amountToPerson.amount }}</span> to
+            <span>{{ amountToPerson?.name }}</span>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div>
+  <div *ngIf="isChosen" class="actions">
+    <div class="action__item">
       <div>This person wants to</div>
-      <div class="input__container">
-        <label class="label" for="lendTo">Give money to </label>
+      <div class="select__container">
+        <label class="label" for="lendTo"><span class="emphasized__text">Give </span> money to </label>
         <select formControlName="lendTo" id="lendTo">
           <option *ngFor="let person of peopleToLendMoneyTo" [ngValue]="person">
             {{ person.name }}
@@ -64,13 +70,13 @@
         <label class="label" for="lendToAmount">How much? </label>
         <input formControlName="lendToAmount" type="number" />
       </div>
-      <button type="button" (click)="lentMoneyTo()">YES</button>
+      <button class="button" type="button" (click)="lentMoneyTo()">YES</button>
     </div>
 
-    <div>
+    <div class="action__item">
       <div>This person wants to</div>
-      <div class="input__container">
-        <label class="label" for="receiveMoneyBack">Receive money from </label>
+      <div class="select__container">
+        <label class="label" for="receiveMoneyBack"><span class="emphasized__text">Receive </span> money from </label>
         <select formControlName="receiveMoneyBack" id="receiveMoneyBack">
           <option
             *ngFor="let person of peopleToReceiveMoneyFrom"
@@ -84,13 +90,15 @@
         <label class="label" for="receiveMoneyBackAmount">How much? </label>
         <input formControlName="receiveMoneyBackAmount" type="number" />
       </div>
-      <button type="button" (click)="receiveDeptFromPerson()">YES</button>
+      <button class="button" type="button" (click)="receiveDeptFromPerson()">
+        YES
+      </button>
     </div>
 
-    <div>
+    <div class="action__item">
       <div>This person wants to</div>
-      <div class="input__container">
-        <label class="label" for="returnMoneyTo">Return money to </label>
+      <div class="select__container">
+        <label class="label" for="returnMoneyTo"><span class="emphasized__text">Return </span> money to </label>
         <select formControlName="returnMoneyTo" id="returnMoneyTo">
           <option
             *ngFor="let person of peopleToReturnMoneyTo"
@@ -104,13 +112,15 @@
         <label class="label" for="returnMoneyToAmount">How much? </label>
         <input formControlName="returnMoneyToAmount" type="number" />
       </div>
-      <button type="button" (click)="payBackTheDeptToPerson()">YES</button>
+      <button class="button" type="button" (click)="payBackTheDeptToPerson()">
+        YES
+      </button>
     </div>
 
-    <div>
+    <div class="action__item">
       <div>This person wants to</div>
-      <div class="input__container">
-        <label class="label" for="borrowFrom">Take money from </label>
+      <div class="select__container">
+        <label class="label" for="borrowFrom"><span class="emphasized__text">Take </span> money from </label>
         <select formControlName="borrowFrom" id="borrowFrom">
           <option
             *ngFor="let person of peopleToBorrowMoneyFrom"
@@ -124,7 +134,9 @@
         <label class="label" for="borrowFromAmount">How much? </label>
         <input formControlName="borrowFromAmount" type="number" />
       </div>
-      <button type="button" (click)="borrowFromPerson()">YES</button>
+      <button class="button" type="button" (click)="borrowFromPerson()">
+        YES
+      </button>
     </div>
   </div>
 </form>

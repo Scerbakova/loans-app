@@ -1,0 +1,26 @@
+.button {
+  color: wheat;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  background-color: rgb(70, 145, 145);
+  cursor: pointer;
+  &:hover {
+    color: azure;
+    background-color: rgb(1, 58, 58);
+  }
+  &:active {
+    color: #14ecdac9;
+    background-color: rgb(3, 158, 158);
+  }
+}
+
+.button:disabled {
+  color: #69f1e6;
+  background-color: rgb(3, 158, 158);
+  cursor: not-allowed;
+}
+
+:host-context(.main__person--button) {
+  margin-left: 10px;
+}

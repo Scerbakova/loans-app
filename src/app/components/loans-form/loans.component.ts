@@ -56,7 +56,7 @@ export class LoansComponent implements OnInit {
 
   onToggleDealHistory() {
     this.showDealHistory = !this.showDealHistory
-    if (this.showDealHistory) {
+    if (!this.showDealHistory) {
       this.dealHistoryButton = "Show all deals"
     } else {
       this.dealHistoryButton = "Hide deals"
@@ -91,7 +91,6 @@ export class LoansComponent implements OnInit {
       this.loansForm.value.lendTo.owes,
       this.loansForm.value.lendTo
     );
-      console.log(this.loansForm.value.lendTo)
     this.onConfirm();
   }
 

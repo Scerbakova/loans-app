@@ -1,6 +1,10 @@
 <form class="form" [formGroup]="loansForm">
   <div class="main__person--wrapper">
-    <label class="main__person--label" for="mainPerson">Select a person </label>
+    <app-label
+      class="main__person--label"
+      [for]="'mainPerson'"
+      [labelText]="'Select a person'"
+    ></app-label>
     <div class="main__person--select-wrapper">
       <app-person-select
         [people]="people"
@@ -8,15 +12,13 @@
         [id]="'mainPerson'"
         [parentForm]="loansForm"
       ></app-person-select>
-
-      <button
-        [disabled]="!loansForm.valid"
-        class="button"
+      <app-button
+        class="main__person--button"
         (click)="findPerson()"
-        type="button"
+        [disabled]="!loansForm.valid"
+        [buttonLabel]="'Find'"
       >
-        Find
-      </button>
+      </app-button>
     </div>
 
     <div *ngIf="isChosen" class="data">
@@ -53,13 +55,13 @@
             <span>{{ amountToPerson?.name }}</span>
           </div>
         </div>
-        <button
-          class="button"
-          [disabled]="!person.deals.length"
+        <app-button
           (click)="onToggleDealHistory()"
+          [disabled]="!person.deals.length"
+          [buttonLabel]="dealHistoryButton"
         >
-          {{ dealHistoryButton }}
-        </button>
+        </app-button>
+
         <div *ngIf="showDealHistory">
           <div *ngFor="let deal of person.deals">
             <div>date: {{ deal.date }}</div>
@@ -78,9 +80,11 @@
     <div class="action__item">
       <div>This person wants to</div>
       <div class="select__container">
-        <label class="label" for="lendTo"
-          ><span class="emphasized__text">Give </span> money to
-        </label>
+        <app-label
+          [for]="'lendTo'"
+          [spanText]="'Give '"
+          [labelText]="'money to'"
+        ></app-label>
         <app-person-select
           [people]="peopleToLendMoneyTo"
           formControlName="lendTo"
@@ -89,18 +93,24 @@
         ></app-person-select>
       </div>
       <div class="input__container">
-        <label class="label" for="lendToAmount">How much? </label>
-        <input formControlName="lendToAmount" type="number" />
+        <app-label [for]="'lendToAmount'" [labelText]="'How much?'"></app-label>
+        <app-amount-input
+          [parentForm]="loansForm"
+          formControlName="lendToAmount"
+        ></app-amount-input>
       </div>
-      <button class="button" type="button" (click)="lentMoneyTo()">YES</button>
+      <app-button (click)="lentMoneyTo()" [buttonLabel]="'Accept deal'">
+      </app-button>
     </div>
 
     <div class="action__item">
       <div>This person wants to</div>
       <div class="select__container">
-        <label class="label" for="receiveMoneyBack"
-          ><span class="emphasized__text">Receive </span> money from
-        </label>
+        <app-label
+          [for]="'receiveMoneyBack'"
+          [spanText]="'Receive '"
+          [labelText]="'money from'"
+        ></app-label>
 
         <app-person-select
           [people]="peopleToReceiveMoneyFrom"
@@ -110,20 +120,30 @@
         ></app-person-select>
       </div>
       <div class="input__container">
-        <label class="label" for="receiveMoneyBackAmount">How much? </label>
-        <input formControlName="receiveMoneyBackAmount" type="number" />
+        <app-label
+          [for]="'receiveMoneyBackAmount'"
+          [labelText]="'How much?'"
+        ></app-label>
+        <app-amount-input
+          [parentForm]="loansForm"
+          formControlName="receiveMoneyBackAmount"
+        ></app-amount-input>
       </div>
-      <button class="button" type="button" (click)="receiveDeptFromPerson()">
-        YES
-      </button>
+      <app-button
+        (click)="receiveDeptFromPerson()"
+        [buttonLabel]="'Accept deal'"
+      >
+      </app-button>
     </div>
 
     <div class="action__item">
       <div>This person wants to</div>
       <div class="select__container">
-        <label class="label" for="returnMoneyTo"
-          ><span class="emphasized__text">Return </span> money to
-        </label>
+        <app-label
+          [for]="'returnMoneyTo'"
+          [spanText]="'Return '"
+          [labelText]="'money to'"
+        ></app-label>
 
         <app-person-select
           [people]="peopleToReturnMoneyTo"
@@ -133,20 +153,30 @@
         ></app-person-select>
       </div>
       <div class="input__container">
-        <label class="label" for="returnMoneyToAmount">How much? </label>
-        <input formControlName="returnMoneyToAmount" type="number" />
+        <app-label
+          [for]="'returnMoneyToAmount'"
+          [labelText]="'How much?'"
+        ></app-label>
+        <app-amount-input
+          [parentForm]="loansForm"
+          formControlName="returnMoneyToAmount"
+        ></app-amount-input>
       </div>
-      <button class="button" type="button" (click)="payBackTheDeptToPerson()">
-        YES
-      </button>
+      <app-button
+        (click)="payBackTheDeptToPerson()"
+        [buttonLabel]="'Accept deal'"
+      >
+      </app-button>
     </div>
 
     <div class="action__item">
       <div>This person wants to</div>
       <div class="select__container">
-        <label class="label" for="borrowFrom"
-          ><span class="emphasized__text">Take </span> money from
-        </label>
+        <app-label
+          [for]="'borrowFrom'"
+          [spanText]="'Take '"
+          [labelText]="'money from'"
+        ></app-label>
 
         <app-person-select
           [people]="peopleToBorrowMoneyFrom"
@@ -156,12 +186,17 @@
         ></app-person-select>
       </div>
       <div class="input__container">
-        <label class="label" for="borrowFromAmount">How much? </label>
-        <input formControlName="borrowFromAmount" type="number" />
+        <app-label
+          [for]="'borrowFromAmount'"
+          [labelText]="'How much?'"
+        ></app-label>
+        <app-amount-input
+          [parentForm]="loansForm"
+          formControlName="borrowFromAmount"
+        ></app-amount-input>
       </div>
-      <button class="button" type="button" (click)="borrowFromPerson()">
-        YES
-      </button>
+      <app-button (click)="borrowFromPerson()" [buttonLabel]="'Accept deal'">
+      </app-button>
     </div>
   </div>
 </form>

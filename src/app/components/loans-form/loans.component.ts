@@ -20,7 +20,8 @@ export class LoansComponent implements OnInit {
   isChosen = false;
   personHasDebt = false;
   personHasDebtors = false;
-  mainPerson = this.loansForm.get('mainPerson')
+  showDealHistory = false;
+  dealHistoryButton = "Show all deals"
 
   constructor(
     private fb: FormBuilder,
@@ -36,8 +37,6 @@ export class LoansComponent implements OnInit {
       ) as Person[];
     }
     this.buidForm();
-    
-    this.loansForm.valueChanges.subscribe(newVal => console.log(newVal))
   }
 
   buidForm(): void {
@@ -55,15 +54,22 @@ export class LoansComponent implements OnInit {
     });
   }
 
-
-  onSubmit() {
-    this.loansForm.reset();
+  onToggleDealHistory() {
+    this.showDealHistory = !this.showDealHistory
+    if (this.showDealHistory) {
+      this.dealHistoryButton = "Show all deals"
+    } else {
+      this.dealHistoryButton = "Hide deals"
+    }
   }
 
   findPerson() {
     this.person = this.loansForm.value.mainPerson;
     this.onConfirm();
     this.isChosen = true;
+    this.dealHistoryButton = "Show all deals"
+    this.showDealHistory = false
+
   }
 
   borrowFromPerson() {
@@ -71,9 +77,9 @@ export class LoansComponent implements OnInit {
       this.person,
       this.loansForm.value.borrowFromAmount,
       this.loansForm.value.borrowFrom.name,
-      this.loansForm.value.borrowFrom.lent
+      this.loansForm.value.borrowFrom.lent,
+      this.loansForm.value.borrowFrom
     );
-
     this.onConfirm();
   }
 
@@ -82,9 +88,10 @@ export class LoansComponent implements OnInit {
       this.person,
       this.loansForm.value.lendToAmount,
       this.loansForm.value.lendTo.name,
-      this.loansForm.value.lendTo.owes
+      this.loansForm.value.lendTo.owes,
+      this.loansForm.value.lendTo
     );
-
+      console.log(this.loansForm.value.lendTo)
     this.onConfirm();
   }
 
@@ -94,7 +101,8 @@ export class LoansComponent implements OnInit {
       this.loansForm.value.returnMoneyTo.name,
       this.loansForm.value.returnMoneyToAmount,
       this.loansForm.value.returnMoneyTo.lent,
-      this.loansForm.value.returnMoneyTo.owes
+      this.loansForm.value.returnMoneyTo.owes,
+      this.loansForm.value.returnMoneyTo
     );
     this.onConfirm();
   }
@@ -105,7 +113,8 @@ export class LoansComponent implements OnInit {
       this.loansForm.value.receiveMoneyBack.owes,
       this.loansForm.value.receiveMoneyBack.name,
       this.loansForm.value.receiveMoneyBackAmount,
-      this.loansForm.value.receiveMoneyBack.lent
+      this.loansForm.value.receiveMoneyBack.lent,
+      this.loansForm.value.receiveMoneyBack
     );
 
     this.onConfirm();
@@ -115,8 +124,8 @@ export class LoansComponent implements OnInit {
     this.findPeopleToLentMoneyToOrBorrowFrom();
     this.findPeopleToReturnMoneyTo();
     this.findPeopleToReceiveMoneyFrom();
-    this.loansForm.reset();
     localStorage.setItem('people', JSON.stringify(this.people));
+    this.loansForm.reset();
   }
 
   findPeopleToReturnMoneyTo() {

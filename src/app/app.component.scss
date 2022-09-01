@@ -1,0 +1,27 @@
+.spot {
+  position: absolute;
+  z-index: -1;
+}
+
+.light__spot {
+  top: 0%;
+}
+
+.light__spot--brown {
+  right: 0%;
+}
+
+.light__spot--blue {
+  top: 45%
+}
+
+.light__spot--brown--big {
+  width: 1900px;
+  right: 0%;
+  top: 45%
+}
+
+.light__spot--blue--rectangle {
+  right: 0%;
+  top: 70%;
+}

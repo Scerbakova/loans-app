@@ -1,201 +1,108 @@
 <form class="form" [formGroup]="loansForm">
-  <div class="main__person--wrapper">
-    <app-label
-      class="main__person--label"
-      [for]="'mainPerson'"
-      [labelText]="'Select a person'"
-    ></app-label>
-    <div class="main__person--select-wrapper">
-      <app-person-select
-        [people]="people"
-        formControlName="mainPerson"
-        [id]="'mainPerson'"
-        [parentForm]="loansForm"
-      ></app-person-select>
-      <app-button
-        class="main__person--button"
-        (click)="findPerson()"
-        [disabled]="!loansForm.valid"
-        [buttonLabel]="'Find'"
-      >
-      </app-button>
+  <div *ngIf="!isChosen" class="carousel__wrapper">
+    <app-button
+      (click)="onCarouselDirectionChange('left')"
+      [disabled]="leftButtonDisabled"
+      [backgroundColor]="'inherit'"
+      [round]="true"
+      [size]="'extra-small'"
+      ><img src="../../../assets/images/arrow-left.png" alt="left"
+    /></app-button>
+    <div class="carousel">
+      <app-person-card
+        (click)="findPerson(person)"
+        *ngFor="let person of peopleForCarousel"
+        [person]="person"
+      ></app-person-card>
     </div>
+    <app-button
+      (click)="onCarouselDirectionChange('right')"
+      [disabled]="rightButtonDisabled"
+      [backgroundColor]="'inherit'"
+      [round]="true"
+      [size]="'extra-small'"
+      ><img src="../../../assets/images/arrow-right.png" alt="right"
+    /></app-button>
+  </div>
 
-    <div *ngIf="isChosen" class="data">
-      <div>
-        <div>
-          You have selected <span class="name">{{ person.name }}</span>
-        </div>
-        <div><span>Balance: </span>{{ person.balance }}</div>
-        <div class="owes">
-          This person
-          <span class="emphasized__text"
-            >owes {{ person.owes.totalAmount }}</span
-          >
-          <div>details:</div>
-          <div
-            class="details__owes"
-            *ngFor="let amountToPerson of person.owes.amountToOnePerson"
-          >
-            <span>{{ amountToPerson.amount }}</span> to
-            <span>{{ amountToPerson.name }}</span>
-          </div>
-        </div>
-        <div class="lent">
-          This person
-          <span class="emphasized__text"
-            >lent {{ person.lent.totalAmount }}</span
-          >
-          <div>details:</div>
-          <div
-            class="details__lent"
-            *ngFor="let amountToPerson of person.lent.amountToOnePerson"
-          >
-            <span>{{ amountToPerson.amount }}</span> to
-            <span>{{ amountToPerson?.name }}</span>
-          </div>
-        </div>
+  <div *ngIf="isChosen" class="main__person">
+    <div class="main__person-deals--info">
+      <div class="main__person-button--deals">
         <app-button
           (click)="onToggleDealHistory()"
           [disabled]="!person.deals.length"
           [buttonLabel]="dealHistoryButton"
+          [backgroundColor]="'inherit'"
         >
         </app-button>
+      </div>
+      <div *ngIf="showDealHistory">
+        <app-history-of-deals
+          formGroupName="dealsInfo"
+          [person]="person"
+        ></app-history-of-deals>
+      </div>
+    </div>
 
-        <div *ngIf="showDealHistory">
-          <div *ngFor="let deal of person.deals">
-            <div>date: {{ deal.date }}</div>
-            <div>time: {{ deal.time }}</div>
-            <span>{{ deal.mainPerson }} </span>
-            <span>{{ deal.type }} </span>
-            <span>{{ deal.formPerson }}</span>
-            <div>amount: {{ deal.amount }}</div>
-          </div>
+    <div class="main__person-deal">
+      <div>
+        <app-person-detailed-card [person]="person"></app-person-detailed-card>
+      </div>
+
+      <div>
+        <app-label [for]="'deal'" [labelText]="'Select a deal'"></app-label>
+        <app-deal-select
+          [deals]="deals"
+          formControlName="deal"
+          [id]="'deal'"
+          [parentForm]="loansForm"
+        ></app-deal-select>
+        <app-button
+          (click)="selectDeal()"
+          [buttonLabel]="'Ok'"
+          [backgroundColor]="'inherit'"
+        >
+        </app-button>
+      </div>
+
+      <div class="action__form" *ngIf="activePeopleBoolean === true">
+        <div>This person wants to</div>
+        <div class="select__container">
+          <app-label
+            [for]="'lendTo'"
+            [spanText]="activeDeal"
+            [labelText]="'money' + ' ' + preposition"
+          ></app-label>
+          <app-person-select
+            [people]="activePeople"
+            formControlName="formPerson"
+            [id]="'formPerson'"
+            [parentForm]="loansForm"
+          ></app-person-select>
         </div>
+        <div class="input__container">
+          <app-label [for]="'amount'" [labelText]="'How much?'"></app-label>
+          <app-amount-input
+            [parentForm]="loansForm"
+            formControlName="amount"
+          ></app-amount-input>
+        </div>
+        <app-button
+          [backgroundColor]="'inherit'"
+          (click)="activeFunction()"
+          [buttonLabel]="'Accept deal'"
+        >
+        </app-button>
       </div>
     </div>
-  </div>
 
-  <div *ngIf="isChosen" class="actions">
-    <div class="action__item">
-      <div>This person wants to</div>
-      <div class="select__container">
-        <app-label
-          [for]="'lendTo'"
-          [spanText]="'Give '"
-          [labelText]="'money to'"
-        ></app-label>
-        <app-person-select
-          [people]="peopleToLendMoneyTo"
-          formControlName="lendTo"
-          [id]="'lendTo'"
-          [parentForm]="loansForm"
-        ></app-person-select>
-      </div>
-      <div class="input__container">
-        <app-label [for]="'lendToAmount'" [labelText]="'How much?'"></app-label>
-        <app-amount-input
-          [parentForm]="loansForm"
-          formControlName="lendToAmount"
-        ></app-amount-input>
-      </div>
-      <app-button (click)="lentMoneyTo()" [buttonLabel]="'Accept deal'">
-      </app-button>
-    </div>
-
-    <div class="action__item">
-      <div>This person wants to</div>
-      <div class="select__container">
-        <app-label
-          [for]="'receiveMoneyBack'"
-          [spanText]="'Receive '"
-          [labelText]="'money from'"
-        ></app-label>
-
-        <app-person-select
-          [people]="peopleToReceiveMoneyFrom"
-          formControlName="receiveMoneyBack"
-          [id]="'receiveMoneyBack'"
-          [parentForm]="loansForm"
-        ></app-person-select>
-      </div>
-      <div class="input__container">
-        <app-label
-          [for]="'receiveMoneyBackAmount'"
-          [labelText]="'How much?'"
-        ></app-label>
-        <app-amount-input
-          [parentForm]="loansForm"
-          formControlName="receiveMoneyBackAmount"
-        ></app-amount-input>
-      </div>
+    <div class="main__person-button--return">
       <app-button
-        (click)="receiveDeptFromPerson()"
-        [buttonLabel]="'Accept deal'"
+        (click)="onReturnToCarousel()"
+        [disabled]="!person.deals.length"
+        [buttonLabel]="'See all people'"
+        [backgroundColor]="'inherit'"
       >
-      </app-button>
-    </div>
-
-    <div class="action__item">
-      <div>This person wants to</div>
-      <div class="select__container">
-        <app-label
-          [for]="'returnMoneyTo'"
-          [spanText]="'Return '"
-          [labelText]="'money to'"
-        ></app-label>
-
-        <app-person-select
-          [people]="peopleToReturnMoneyTo"
-          formControlName="returnMoneyTo"
-          [id]="'returnMoneyTo'"
-          [parentForm]="loansForm"
-        ></app-person-select>
-      </div>
-      <div class="input__container">
-        <app-label
-          [for]="'returnMoneyToAmount'"
-          [labelText]="'How much?'"
-        ></app-label>
-        <app-amount-input
-          [parentForm]="loansForm"
-          formControlName="returnMoneyToAmount"
-        ></app-amount-input>
-      </div>
-      <app-button
-        (click)="payBackTheDeptToPerson()"
-        [buttonLabel]="'Accept deal'"
-      >
-      </app-button>
-    </div>
-
-    <div class="action__item">
-      <div>This person wants to</div>
-      <div class="select__container">
-        <app-label
-          [for]="'borrowFrom'"
-          [spanText]="'Take '"
-          [labelText]="'money from'"
-        ></app-label>
-
-        <app-person-select
-          [people]="peopleToBorrowMoneyFrom"
-          formControlName="borrowFrom"
-          [id]="'borrowFrom'"
-          [parentForm]="loansForm"
-        ></app-person-select>
-      </div>
-      <div class="input__container">
-        <app-label
-          [for]="'borrowFromAmount'"
-          [labelText]="'How much?'"
-        ></app-label>
-        <app-amount-input
-          [parentForm]="loansForm"
-          formControlName="borrowFromAmount"
-        ></app-amount-input>
-      </div>
-      <app-button (click)="borrowFromPerson()" [buttonLabel]="'Accept deal'">
       </app-button>
     </div>
   </div>

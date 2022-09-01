@@ -1,0 +1,24 @@
+.person__name {
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 2px 2px 1px rgb(0, 0, 0);
+  color: #ffffff;
+}
+
+.person__picture {
+  cursor: pointer;
+  border-radius: 6px;
+  margin: 20px 0;
+}
+
+.person__picture:hover {
+  cursor: pointer;
+  border-radius: 6px;
+  transform: scale(1.05);
+  box-shadow: -2px 2px 15px 2px #5454D4;
+  transition: ease-in .3s
+}
+
+.balance__amount {
+  color: #ffffff;
+}

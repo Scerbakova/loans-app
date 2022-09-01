@@ -1,0 +1,24 @@
+.name {
+  font-size: 24px;
+  color: rgb(3, 158, 158);
+}
+
+.person__picture {
+  border-radius: 6px;
+}
+
+.details__lent, .details__owes {
+  font-size: 20px;
+}
+
+.details__lent {
+  color: rgb(116, 199, 116);
+}
+
+.details__owes {
+  color: rgb(192, 121, 121);
+}
+
+.balance__amount {
+  color: #ffffff;
+}

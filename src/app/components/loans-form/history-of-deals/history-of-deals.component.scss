@@ -1,0 +1,29 @@
+.deal__history-form {
+  margin-top: 20px;
+}
+
+.sort, .filter {
+  display: flex;
+  justify-content: space-between;
+}
+
+select {
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  margin-bottom: 20px;
+  padding: 8px 10px;
+  background-color: inherit;
+  margin-left: 10px;
+  color: white;
+  min-width: 200px;
+  box-shadow: 0px 0px 5px 2px rgb(3, 158, 158);
+}
+
+select:focus {
+  box-shadow: 0px 0px 5px 2px #5454D4;
+}
+
+option, optgroup {
+  background-color: #19191b;
+}

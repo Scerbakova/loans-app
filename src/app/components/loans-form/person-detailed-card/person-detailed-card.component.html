@@ -1,0 +1,37 @@
+<div>
+  <div>
+    You have chosen <span class="name">{{ person.name }}</span>
+  </div>
+  <div>
+    <img class="person__picture" src={{person.photo}} alt={{person.name}}>
+  </div>
+  <div>Balance: <span class="balance__amount">{{ person.balance }}</span></div>
+  <div class="owes">
+    This person
+    <span class="emphasized__text"
+      >owes {{ person.owes.totalAmount }}</span
+    >
+    <div>details:</div>
+    <div
+      class="details__owes"
+      *ngFor="let amountToPerson of person.owes.amountToOnePerson"
+    >
+      <span>{{ amountToPerson.amount }}</span> to
+      <span>{{ amountToPerson.name }}</span>
+    </div>
+  </div>
+  <div class="lent">
+    This person
+    <span class="emphasized__text"
+      >lent {{ person.lent.totalAmount }}</span
+    >
+    <div>details:</div>
+    <div
+      class="details__lent"
+      *ngFor="let amountToPerson of person.lent.amountToOnePerson"
+    >
+      <span>{{ amountToPerson.amount }}</span> to
+      <span>{{ amountToPerson?.name }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div>
+  <div class="person__name">
+    This is <span class="name">{{ person.name }}</span>
+  </div>
+  <div>
+    <img class="person__picture" src={{person.photo}} alt={{person.name}}>
+  </div>
+  <div>Balance: <span class="balance__amount">{{ person.balance }}</span></div>
+  <div class="owes">
+    This person
+    <span class="emphasized__text"
+      >owes {{ person.owes.totalAmount }}</span
+    >
+  <div class="lent">
+    This person
+    <span class="emphasized__text"
+      >lent {{ person.lent.totalAmount }}</span
+    >
+  </div>
+</div>

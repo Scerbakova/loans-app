@@ -1,0 +1,31 @@
+<form class="deal__history-form" [formGroup]="form">
+  <div class="sort">
+    <app-label
+    class="label"
+    [for]="'sort'"
+    [labelText]="'Sort deals by'"
+  ></app-label>
+    <select formControlName="sort" id="sort">
+      <optgroup *ngFor="let select of sort" label="{{ select.label }}">
+        <option *ngFor="let option of select.options" [ngValue]="option">
+          {{ option }}
+        </option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="filter">
+    <app-label
+    class="label"
+    [for]="'filter'"
+    [labelText]="'Show only'"
+  ></app-label>
+    <select formControlName="filter" id="filter">
+        <option *ngFor="let option of filter" [ngValue]="option">
+          {{ option }}
+        </option>
+    </select>
+  </div>
+
+</form>
+<app-deal-card *ngFor="let deal of person.deals" [deal]="deal"></app-deal-card>

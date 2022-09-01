@@ -12,70 +12,80 @@ export class PersonCreditHistoryService {
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/John.png',
     ),
     new Person(
       'Jack',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/Jack.png',
     ),
     new Person(
       'Mary',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/Mary.png',
     ),
     new Person(
       'Peter',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/Peter.png',
     ),
     new Person(
       'Paul',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/Paul.png',
     ),
     new Person(
       'Joseph',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/Joseph.png',
     ),
     new Person(
       'Kate',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/Kate.png',
     ),
     new Person(
       'Rachel',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/Rachel.png',
     ),
     new Person(
       'Edward',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      '/assets/Edward.png',
     ),
     new Person(
       'Elizabeth',
       { totalAmount: 0, amountToOnePerson: [] },
       { totalAmount: 0, amountToOnePerson: [] },
       1000,
-      []
+      [],
+      'assets/Elizabeth.png',
     ),
   ];
 
@@ -88,8 +98,20 @@ export class PersonCreditHistoryService {
     ':' +
     new Date().getSeconds();
 
-  recordDeal(person: Person, deal: string, formPerson: Person, formNumber: number): Deal {
-    return new Deal(this.date, this.time, person.name, deal, formPerson.name, formNumber);
+  recordDeal(
+    person: Person,
+    deal: string,
+    formPerson: Person,
+    formNumber: number
+  ): Deal {
+    return new Deal(
+      this.date,
+      this.time,
+      person.name,
+      deal,
+      formPerson.name,
+      formNumber
+    );
   }
 
   getData() {
@@ -174,14 +196,24 @@ export class PersonCreditHistoryService {
     const dealTypeForMainPerson = 'borrowed money from';
     const dealTypeForFormPerson = 'lent money to';
 
-    const mainPersonDeal = this.recordDeal(person, dealTypeForMainPerson, formPerson, formNumber);
-    const formPersonDeal = this.recordDeal(formPerson, dealTypeForFormPerson, person, formNumber);
+    const mainPersonDeal = this.recordDeal(
+      person,
+      dealTypeForMainPerson,
+      formPerson,
+      formNumber
+    );
+    const formPersonDeal = this.recordDeal(
+      formPerson,
+      dealTypeForFormPerson,
+      person,
+      formNumber
+    );
 
     person.deals.push(mainPersonDeal);
-    formPerson.deals.push(formPersonDeal)
+    formPerson.deals.push(formPersonDeal);
   }
 
-  lentMoneyTo(
+  lendMoneyTo(
     person: Person,
     formNumber: number,
     formName: string,
@@ -220,11 +252,21 @@ export class PersonCreditHistoryService {
     const dealTypeForMainPerson = 'lent money to';
     const dealTypeForFormPerson = 'borrowed money from';
 
-    const mainPersonDeal = this.recordDeal(person, dealTypeForMainPerson, formPerson, formNumber);
-    const formPersonDeal = this.recordDeal(formPerson, dealTypeForFormPerson, person, formNumber);
+    const mainPersonDeal = this.recordDeal(
+      person,
+      dealTypeForMainPerson,
+      formPerson,
+      formNumber
+    );
+    const formPersonDeal = this.recordDeal(
+      formPerson,
+      dealTypeForFormPerson,
+      person,
+      formNumber
+    );
 
     person.deals.push(mainPersonDeal);
-    formPerson.deals.push(formPersonDeal)
+    formPerson.deals.push(formPersonDeal);
   }
 
   payBackTheDeptToPerson(
@@ -332,11 +374,21 @@ export class PersonCreditHistoryService {
     const dealTypeForMainPerson = 'returned money to';
     const dealTypeForFormPerson = 'received money from';
 
-    const mainPersonDeal = this.recordDeal(person, dealTypeForMainPerson, formPerson, formNumber);
-    const formPersonDeal = this.recordDeal(formPerson, dealTypeForFormPerson, person, formNumber);
+    const mainPersonDeal = this.recordDeal(
+      person,
+      dealTypeForMainPerson,
+      formPerson,
+      formNumber
+    );
+    const formPersonDeal = this.recordDeal(
+      formPerson,
+      dealTypeForFormPerson,
+      person,
+      formNumber
+    );
 
     person.deals.push(mainPersonDeal);
-    formPerson.deals.push(formPersonDeal)
+    formPerson.deals.push(formPersonDeal);
   }
 
   receiveDeptFromPerson(
@@ -447,10 +499,20 @@ export class PersonCreditHistoryService {
     const dealTypeForMainPerson = 'received money from';
     const dealTypeForFormPerson = 'returned money to';
 
-    const mainPersonDeal = this.recordDeal(person, dealTypeForMainPerson, formPerson, formNumber);
-    const formPersonDeal = this.recordDeal(formPerson, dealTypeForFormPerson, person, formNumber);
+    const mainPersonDeal = this.recordDeal(
+      person,
+      dealTypeForMainPerson,
+      formPerson,
+      formNumber
+    );
+    const formPersonDeal = this.recordDeal(
+      formPerson,
+      dealTypeForFormPerson,
+      person,
+      formNumber
+    );
 
     person.deals.push(mainPersonDeal);
-    formPerson.deals.push(formPersonDeal)
+    formPerson.deals.push(formPersonDeal);
   }
 }

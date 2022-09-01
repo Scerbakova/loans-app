@@ -10,22 +10,23 @@ import {
   template: `<div [formGroup]="parentForm">
     <input [formControlName]="formControlName" type="number" />
   </div>`,
-  styles: [
-    `
-      input {
-        border-radius: 6px;
-        border: none;
-        outline: none;
-        margin-bottom: 20px;
-        padding: 8px 10px;
-        background-color: rgb(213, 238, 243);
-        margin-left: 10px;
-      }
-      input:focus {
-        box-shadow: 0px 0px 5px 2px rgb(3, 158, 158);
-      }
-    `,
-  ],
+    styleUrls: ['./amount-input.component.scss'],
+  // styles: [
+  //   `
+  //     input {
+  //       border-radius: 6px;
+  //       border: none;
+  //       outline: none;
+  //       margin-bottom: 20px;
+  //       padding: 8px 10px;
+  //       background-color: rgb(213, 238, 243);
+  //       margin-left: 10px;
+  //     }
+  //     input:focus {
+  //       box-shadow: 0px 0px 5px 2px rgb(3, 158, 158);
+  //     }
+  //   `,
+  // ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

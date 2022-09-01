@@ -11,17 +11,31 @@ import { PersonCreditHistoryService } from 'src/app/person-credit-history.servic
 })
 export class LoansComponent implements OnInit {
   loansForm: FormGroup = this.fb.group({});
+
   people!: Person[];
-  peopleToBorrowMoneyFrom!: Person[];
-  peopleToLendMoneyTo!: Person[];
-  peopleToReturnMoneyTo!: Person[];
-  peopleToReceiveMoneyFrom!: Person[];
+  activePeople!: Person[];
+  peopleForCarousel!: Person[];
+
   person!: Person;
+
   isChosen = false;
+  activePeopleBoolean = false;
   personHasDebt = false;
   personHasDebtors = false;
   showDealHistory = false;
-  dealHistoryButton = "Show all deals"
+  rightButtonDisabled = false;
+  leftButtonDisabled = true;
+
+  dealHistoryButton = 'Show all deals';
+  activeDeal!: string;
+  preposition!: string;
+
+  deals = ['Give', 'Take', 'Receive', 'Return'];
+
+  activeFunction!: () => void;
+
+  offset = 0;
+  length = 3;
 
   constructor(
     private fb: FormBuilder,
@@ -37,59 +51,102 @@ export class LoansComponent implements OnInit {
       ) as Person[];
     }
     this.buidForm();
+    this.peopleForCarousel = this.people.slice(this.offset, this.length);
   }
 
   buidForm(): void {
     this.loansForm = this.fb.group({
       mainPerson: ['', Validators.required],
-      borrowFrom: [''],
-      lendTo: [''],
-      returnMoneyTo: [''],
-      receiveMoneyBack: [''],
-
-      borrowFromAmount: null,
-      lendToAmount: null,
-      returnMoneyToAmount: null,
-      receiveMoneyBackAmount: null,
+      deal: [''],
+      formPerson: [''],
+      amount: null,
+      dealsInfo: this.fb.group({
+        sort: [],
+        filter: [],
+      }),
     });
   }
 
   onToggleDealHistory() {
-    this.showDealHistory = !this.showDealHistory
+    this.showDealHistory = !this.showDealHistory;
     if (!this.showDealHistory) {
-      this.dealHistoryButton = "Show all deals"
+      this.dealHistoryButton = 'Show all deals';
     } else {
-      this.dealHistoryButton = "Hide deals"
+      this.dealHistoryButton = 'Hide deals';
     }
   }
 
-  findPerson() {
-    this.person = this.loansForm.value.mainPerson;
+  onReturnToCarousel() {
+    this.isChosen = false;
+    this.activePeopleBoolean = false
+  }
+
+  findPerson(person: Person) {
+    this.person = person;
     this.onConfirm();
     this.isChosen = true;
-    this.dealHistoryButton = "Show all deals"
-    this.showDealHistory = false
+    this.dealHistoryButton = 'Show all deals';
+    this.showDealHistory = false;
+  }
 
+  onCarouselDirectionChange(direction: string) {
+    if (direction === 'right') {
+      this.leftButtonDisabled = false;
+      this.offset += 1;
+      this.length += 1;
+      this.peopleForCarousel = this.people.slice(this.offset, this.length);
+      if (this.length === this.people.length) {
+        this.rightButtonDisabled = true;
+      }
+    } else {
+      this.rightButtonDisabled = false;
+      this.offset -= 1;
+      this.length -= 1;
+      this.peopleForCarousel = this.people.slice(this.offset, this.length);
+      if (this.offset === 0) {
+        this.leftButtonDisabled = true;
+      }
+    }
+  }
+
+  selectDeal() {
+    this.activeDeal = this.loansForm.value.deal;
+
+    if (this.loansForm.value.deal === 'Give') {
+      this.findPeopleToLentMoneyToOrBorrowFrom();
+      this.activeFunction = this.lendMoneyTo;
+      this.preposition = 'to';
+    } else if (this.loansForm.value.deal === 'Take') {
+      this.findPeopleToLentMoneyToOrBorrowFrom();
+      this.activeFunction = this.borrowFromPerson;
+      this.preposition = 'from';
+    } else if (this.loansForm.value.deal === 'Return') {
+      this.findPeopleToReturnMoneyTo();
+      this.preposition = 'to';
+    } else {
+      this.findPeopleToReceiveMoneyFrom();
+      this.preposition = 'from';
+    }
   }
 
   borrowFromPerson() {
     this.personCreditHistoryService.borrowFromPerson(
       this.person,
-      this.loansForm.value.borrowFromAmount,
-      this.loansForm.value.borrowFrom.name,
-      this.loansForm.value.borrowFrom.lent,
-      this.loansForm.value.borrowFrom
+      this.loansForm.value.amount,
+      this.loansForm.value.formPerson.name,
+      this.loansForm.value.formPerson.lent,
+      this.loansForm.value.formPerson
     );
     this.onConfirm();
   }
 
-  lentMoneyTo() {
-    this.personCreditHistoryService.lentMoneyTo(
+  lendMoneyTo() {
+    this.personCreditHistoryService.lendMoneyTo(
       this.person,
-      this.loansForm.value.lendToAmount,
-      this.loansForm.value.lendTo.name,
-      this.loansForm.value.lendTo.owes,
-      this.loansForm.value.lendTo
+      this.loansForm.value.amount,
+      this.loansForm.value.formPerson.name,
+      this.loansForm.value.formPerson.owes,
+      this.loansForm.value.formPerson
     );
     this.onConfirm();
   }
@@ -97,11 +154,11 @@ export class LoansComponent implements OnInit {
   payBackTheDeptToPerson() {
     this.personCreditHistoryService.payBackTheDeptToPerson(
       this.person,
-      this.loansForm.value.returnMoneyTo.name,
-      this.loansForm.value.returnMoneyToAmount,
-      this.loansForm.value.returnMoneyTo.lent,
-      this.loansForm.value.returnMoneyTo.owes,
-      this.loansForm.value.returnMoneyTo
+      this.loansForm.value.formPerson.name,
+      this.loansForm.value.amount,
+      this.loansForm.value.formPerson.lent,
+      this.loansForm.value.formPerson.owes,
+      this.loansForm.value.formPerson
     );
     this.onConfirm();
   }
@@ -109,47 +166,48 @@ export class LoansComponent implements OnInit {
   receiveDeptFromPerson() {
     this.personCreditHistoryService.receiveDeptFromPerson(
       this.person,
-      this.loansForm.value.receiveMoneyBack.owes,
-      this.loansForm.value.receiveMoneyBack.name,
-      this.loansForm.value.receiveMoneyBackAmount,
-      this.loansForm.value.receiveMoneyBack.lent,
-      this.loansForm.value.receiveMoneyBack
+      this.loansForm.value.formPerson.owes,
+      this.loansForm.value.formPerson.name,
+      this.loansForm.value.amount,
+      this.loansForm.value.formPerson.lent,
+      this.loansForm.value.formPerson
     );
 
     this.onConfirm();
   }
 
   onConfirm() {
-    this.findPeopleToLentMoneyToOrBorrowFrom();
-    this.findPeopleToReturnMoneyTo();
-    this.findPeopleToReceiveMoneyFrom();
     localStorage.setItem('people', JSON.stringify(this.people));
     this.loansForm.reset();
   }
 
-  findPeopleToReturnMoneyTo() {
+  findPeopleToReturnMoneyTo(): Person[] {
+    this.activeFunction = this.payBackTheDeptToPerson;
     //find lenders' names
     let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.owes.amountToOnePerson
     );
+    this.activePeopleBoolean = true
     //find people who will be present in 'returnMoneyTo' select options
-    this.peopleToReturnMoneyTo = this.people.filter(
+    return (this.activePeople = this.people.filter(
       (human) => lenders.includes(human.name) && human.name != this.person.name
-    );
+    ));
   }
 
-  findPeopleToReceiveMoneyFrom() {
+  findPeopleToReceiveMoneyFrom(): Person[] {
+    this.activeFunction = this.receiveDeptFromPerson;
     //find debtors' names
     let deptors = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.lent.amountToOnePerson
     );
+    this.activePeopleBoolean = true
     //find people who will be present in 'receiveMoneyFrom' select options
-    this.peopleToReceiveMoneyFrom = this.people.filter(
+    return (this.activePeople = this.people.filter(
       (human) => deptors.includes(human.name) && human.name != this.person.name
-    );
+    ));
   }
 
-  findPeopleToLentMoneyToOrBorrowFrom() {
+  findPeopleToLentMoneyToOrBorrowFrom(): Person[] {
     //find lenders' names
     let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.owes.amountToOnePerson
@@ -158,20 +216,12 @@ export class LoansComponent implements OnInit {
     let debtors = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.lent.amountToOnePerson
     );
-
-    //find people who will be present in 'lendMoneyTo' select options
-    this.peopleToLendMoneyTo = this.people.filter(
+    this.activePeopleBoolean = true
+    return (this.activePeople = this.people.filter(
       (human) =>
         !lenders.includes(human.name) &&
         !debtors.includes(human.name) &&
         human.name != this.person.name
-    );
-    //find people who will be present in 'borrowMoneyFrom' select options
-    this.peopleToBorrowMoneyFrom = this.people.filter(
-      (human) =>
-        !lenders.includes(human.name) &&
-        !debtors.includes(human.name) &&
-        human.name != this.person.name
-    );
+    ));
   }
 }

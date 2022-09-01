@@ -4,7 +4,8 @@ export class Person {
     public owes: Amount,
     public lent: Amount,
     public balance: number,
-    public deals: Deal[]
+    public deals: Deal[],
+    public photo: string,
   ) {}
 }
 

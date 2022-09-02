@@ -8,7 +8,7 @@ import {
 @Component({
   selector: 'app-amount-input',
   template: `<div [formGroup]="parentForm">
-    <input [formControlName]="formControlName" type="number" />
+    <input placeholder="write amount here" [formControlName]="formControlName" type="number" />
   </div>`,
     styleUrls: ['./amount-input.component.scss'],
   providers: [

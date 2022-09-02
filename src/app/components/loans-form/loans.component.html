@@ -70,6 +70,7 @@
           (click)="selectDeal()"
           [buttonLabel]="'Ok'"
           [backgroundColor]="'inherit'"
+          [disabled]="!loansForm.value.deal"
         >
         </app-button>
       </div>
@@ -98,8 +99,9 @@
         </div>
         <app-button
           [backgroundColor]="'inherit'"
-          (click)="activeFunction()"
+          (click)="activeFunction(); activePeopleBoolean = false"
           [buttonLabel]="'Accept deal'"
+          [disabled]="!loansForm.value.formPerson"
         >
         </app-button>
       </div>

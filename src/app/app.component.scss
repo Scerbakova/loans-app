@@ -1,16 +1,17 @@
+.container {
+  overflow: hidden;
+  position: relative;
+}
 .spot {
   position: absolute;
   z-index: -1;
-  max-height: 100%;
 }
 
 .light__spot {
   top: 0%;
-  max-height: 700px;
 }
 
 .light__spot--brown {
   top: 0%;
   right: 0%;
-  max-height: 700px;
 }

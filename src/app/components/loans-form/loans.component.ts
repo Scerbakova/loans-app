@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Deal, Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
@@ -40,6 +40,27 @@ export class LoansComponent implements OnInit {
   offset = 0;
   length = 3;
 
+  screen: 'wideScreen' | 'mediumScreen' | 'smallScreen' = 'wideScreen';
+  innerWidth: number | undefined;
+
+  @HostListener('window:resize')
+  onResize(): number {
+    this.innerWidth = window.innerWidth;
+
+    if (this.innerWidth > 875) {
+      this.screen = 'wideScreen';
+      this.length = 3
+    } else if (this.innerWidth < 910 && this.innerWidth > 635) {
+      this.screen = 'mediumScreen';
+      this.length = 2
+    } else {
+      this.screen = 'smallScreen';
+      this.length = 1
+    }
+    this.peopleForCarousel = this.people.slice(this.offset, this.length)
+    return this.innerWidth
+  }
+
   constructor(
     private fb: FormBuilder,
     private personCreditHistoryService: PersonCreditHistoryService
@@ -53,6 +74,7 @@ export class LoansComponent implements OnInit {
         localStorage.getItem('people') || '[]'
       ) as Person[];
     }
+    this.onResize();
     this.buidForm();
     this.peopleForCarousel = this.people.slice(this.offset, this.length);
     this.isChosen = JSON.parse(localStorage.getItem('isChosen') || '');

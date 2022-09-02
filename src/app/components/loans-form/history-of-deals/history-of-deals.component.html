@@ -1,37 +1,37 @@
-<form class="deal__history-form" [formGroup]="form">
-  <div class="sort">
-    <app-label
-    class="label"
-    [for]="'sort'"
-    [labelText]="'Sort deals by'"
-  ></app-label>
-    <select formControlName="sort" id="sort">
-        <option *ngFor="let option of options" [ngValue]="option">
-          {{ option }}
-        </option>
-    </select>
-  </div>
-
-  <div class="filter">
-    <app-label
-    class="label"
-    [for]="'filter'"
-    [labelText]="'Show only'"
-  ></app-label>
-    <select formControlName="filter" id="filter">
-        <option *ngFor="let option of filter" [ngValue]="option">
-          {{ option }}
-        </option>
-    </select>
-  </div>
-
-  <app-button
-  (click)="onApply()"
-  [buttonLabel]="'Apply'"
-  [disabled]="!this.form.value.sort || !this.form.value.filter"
-  [backgroundColor]="'inherit'"
->
-</app-button>
-
-</form>
-<app-deal-card *ngFor="let deal of filteredDeals" [deal]="deal"></app-deal-card>
+  <form class="deal__history-form" [formGroup]="form">
+    <div class="sort">
+      <app-label
+      class="label"
+      [for]="'sort'"
+      [labelText]="'Sort deals by'"
+    ></app-label>
+      <select formControlName="sort" id="sort">
+          <option *ngFor="let option of options" [ngValue]="option">
+            {{ option }}
+          </option>
+      </select>
+    </div>
+  
+    <div class="filter">
+      <app-label
+      class="label"
+      [for]="'filter'"
+      [labelText]="'Show only'"
+    ></app-label>
+      <select formControlName="filter" id="filter">
+          <option *ngFor="let option of filter" [ngValue]="option">
+            {{ option }}
+          </option>
+      </select>
+    </div>
+  
+    <app-button
+    (click)="onApply()"
+    [buttonLabel]="'Apply'"
+    [disabled]="!this.form.value.sort || !this.form.value.filter"
+    [backgroundColor]="'inherit'"
+  >
+  </app-button>
+  
+  </form>
+  <app-deal-card *ngFor="let deal of filteredDeals" [deal]="deal"></app-deal-card>

@@ -8,5 +8,5 @@ import { PersonCreditHistoryService } from './person-credit-history.service';
   providers: [PersonCreditHistoryService],
 })
 export class AppComponent {
-  title = 'loans';
+  // title = 'loans';
 }

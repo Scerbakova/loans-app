@@ -105,11 +105,21 @@
       </div>
     </div>
 
-    <div class="main__person-button--return">
+    <div *ngIf="screen !== 'smallScreen'" class="main__person-button--return">
       <app-button
         (click)="onReturnToCarousel()"
         [buttonLabel]="'See all people'"
         [backgroundColor]="'inherit'"
+      >
+      </app-button>
+    </div>
+    <div *ngIf="screen === 'smallScreen'" class="main__person-button--return">
+      <app-button
+        (click)="onReturnToCarousel()"
+        [buttonLabel]="'all'"
+        [backgroundColor]="'inherit'"
+        [round]="true"
+        [size]="'small'"
       >
       </app-button>
     </div>

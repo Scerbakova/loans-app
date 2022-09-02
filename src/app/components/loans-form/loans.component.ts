@@ -58,6 +58,7 @@ export class LoansComponent implements OnInit {
     this.isChosen = JSON.parse(localStorage.getItem('isChosen') || '');
     this.person = JSON.parse(localStorage.getItem('person') || '{}');
     this.showDealHistory = JSON.parse(localStorage.getItem('history') || '[]')
+    // this.dealsfromStorage = JSON.parse(localStorage.getItem('deals') || '[]')
   }
 
   buidForm(): void {
@@ -81,11 +82,13 @@ export class LoansComponent implements OnInit {
       this.dealHistoryButton = 'Hide deals';
     }
     localStorage.setItem('history', JSON.stringify(this.showDealHistory))
+    // this.writeDownDeals()
+    this.filteredDeals = JSON.parse(localStorage.getItem('deals') || '[]')
   }
 
   onReturnToCarousel() {
-    localStorage.setItem('people', JSON.stringify(this.people));
-    localStorage.removeItem('person');
+    // localStorage.setItem('people', JSON.stringify(this.people));
+    // localStorage.removeItem('person');
     this.isChosen = false;
     localStorage.setItem('isChosen', JSON.stringify(this.isChosen));
     this.activePeopleBoolean = false;

@@ -30,7 +30,6 @@ margin: 20px;
 .action__form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .main__person-deal {
@@ -38,8 +37,13 @@ margin: 20px;
   text-align: center;
   margin-top: 50px;
   column-gap: 30px;
-  align-items: center;
   min-width: 730px;
+}
+
+.deal__from-part {
+  display: flex;
+  flex-direction: column;
+  row-gap: 25px;
 }
 
 .arrow {

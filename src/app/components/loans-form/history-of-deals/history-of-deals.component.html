@@ -6,11 +6,9 @@
     [labelText]="'Sort deals by'"
   ></app-label>
     <select formControlName="sort" id="sort">
-      <optgroup *ngFor="let select of sort" label="{{ select.label }}">
-        <option *ngFor="let option of select.options" [ngValue]="option">
+        <option *ngFor="let option of options" [ngValue]="option">
           {{ option }}
         </option>
-      </optgroup>
     </select>
   </div>
 
@@ -27,7 +25,13 @@
     </select>
   </div>
 
-  <button (click)="onApply()">Apply</button>
+  <app-button
+  (click)="onApply()"
+  [buttonLabel]="'Apply'"
+  [disabled]="!this.form.value.sort || !this.form.value.filter"
+  [backgroundColor]="'inherit'"
+>
+</app-button>
 
 </form>
 <app-deal-card *ngFor="let deal of filteredDeals" [deal]="deal"></app-deal-card>

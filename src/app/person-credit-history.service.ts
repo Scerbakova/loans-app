@@ -89,15 +89,6 @@ export class PersonCreditHistoryService {
     ),
   ];
 
-  private date = new Date().toLocaleDateString();
-
-  private time =
-    new Date().getHours() +
-    ':' +
-    new Date().getMinutes() +
-    ':' +
-    new Date().getSeconds();
-
   recordDeal(
     person: Person,
     deal: string,
@@ -105,8 +96,6 @@ export class PersonCreditHistoryService {
     formNumber: number
   ): Deal {
     return new Deal(
-      this.date,
-      this.time,
       person.name,
       deal,
       formPerson.name,
@@ -118,6 +107,7 @@ export class PersonCreditHistoryService {
     localStorage.setItem('people', JSON.stringify(this.People));
     localStorage.setItem('isChosen', JSON.stringify(false));
     return this.People;
+
   }
 
   makeNewEntryInListOfAmountAndPerson(

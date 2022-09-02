@@ -16,22 +16,6 @@ import { Person } from 'src/app/person-credit-history';
     </select>
   </div>`,
   styleUrls: ['./person-select.component.scss'],
-  // styles: [
-  //   `
-  //     select {
-  //       border-radius: 6px;
-  //       border: none;
-  //       outline: none;
-  //       margin-bottom: 20px;
-  //       padding: 8px 10px;
-  //       background-color: inherit;
-  //       margin-left: 10px;
-  //     }
-  //     select:focus {
-  //       box-shadow: 0px 0px 5px 2px rgb(3, 158, 158);
-  //     }
-  //   `,
-  // ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

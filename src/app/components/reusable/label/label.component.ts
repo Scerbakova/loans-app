@@ -7,12 +7,6 @@ import { Component, Input } from '@angular/core';
   </label>`,
   styles: [
     `
-      :host-context(.main__person--label) label {
-        font-size: 24px;
-      }
-      :host-context(.main__person--label) {
-        margin: 24px;
-      }
       span {
         font-weight: 700;
         font-size: 18px;

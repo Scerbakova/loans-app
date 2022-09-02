@@ -6,7 +6,10 @@
       [backgroundColor]="'inherit'"
       [round]="true"
       [size]="'extra-small'"
-      ><img class="arrow" src="../../../assets/images/arrow-left.png" alt="left"
+      ><img
+        class="arrow"
+        src="../../../assets/images/arrow-left.png"
+        alt="left"
     /></app-button>
     <div class="carousel">
       <app-person-card
@@ -21,7 +24,10 @@
       [backgroundColor]="'inherit'"
       [round]="true"
       [size]="'extra-small'"
-      ><img class="arrow" src="../../../assets/images/arrow-right.png" alt="right"
+      ><img
+        class="arrow"
+        src="../../../assets/images/arrow-right.png"
+        alt="right"
     /></app-button>
   </div>
 
@@ -51,7 +57,7 @@
         <app-person-detailed-card [person]="person"></app-person-detailed-card>
       </div>
 
-      <div>
+      <div class="deal__from-part">
         <app-label [for]="'deal'" [labelText]="'Select a deal'"></app-label>
         <app-deal-select
           [deals]="deals"
@@ -59,6 +65,7 @@
           [id]="'deal'"
           [parentForm]="loansForm"
         ></app-deal-select>
+
         <app-button
           (click)="selectDeal()"
           [buttonLabel]="'Ok'"

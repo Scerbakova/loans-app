@@ -22,8 +22,6 @@ export class AmountAndPerson {
 
 export class Deal {
   constructor(
-    public date: string,
-    public time: string,
     public mainPerson: string,
     public type: string,
     public formPerson: string,

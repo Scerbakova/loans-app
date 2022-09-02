@@ -22,25 +22,7 @@ export class HistoryOfDealsComponent implements OnInit {
 
   form!: FormGroup;
 
-  sort = [
-    {
-      label: 'date',
-      options: ['oldest to newest', 'newest to oldest'],
-    },
-    {
-      label: 'amount',
-      options: ['largest to smallest', 'smallest to largest'],
-    },
-    {
-      label: 'type',
-      options: [
-        'given first',
-        'taken first',
-        'returned first',
-        'received first',
-      ],
-    },
-  ];
+  options = ['largest to smallest', 'smallest to largest'];
 
   filter = ['all', 'given', 'taken', 'returned', 'received'];
 
@@ -57,9 +39,11 @@ export class HistoryOfDealsComponent implements OnInit {
     return this.deals.filter((deal) => deal.type.includes('received'));
   }
 
-  oldestToNewest() {
-    const b = this.deals.map((deal) => deal.time);
-    return b.sort();
+  largestToSmallest() {
+    this.deals.sort((a, b) => b.amount - a.amount);
+  }
+  smallestToLargest() {
+    this.deals.sort((a, b) => a.amount - b.amount);
   }
 
   constructor(private rootFormGroup: FormGroupDirective) {}
@@ -74,7 +58,17 @@ export class HistoryOfDealsComponent implements OnInit {
   }
 
   onSortApplied() {
-    console.log(this.oldestToNewest())
+    switch (this.form.value.sort) {
+      case 'largest to smallest':
+        this.largestToSmallest();
+        break;
+      case 'smallest to largest':
+        this.smallestToLargest();
+        break;
+      default:
+        this.filteredDeals = this.deals;
+        break;
+    }
   }
 
   onFilterApplied() {

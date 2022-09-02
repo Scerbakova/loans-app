@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Person } from 'src/app/person-credit-history';
+import { Deal, Person } from 'src/app/person-credit-history';
 import { PersonCreditHistoryService } from 'src/app/person-credit-history.service';
 
 @Component({
@@ -15,6 +15,9 @@ export class LoansComponent implements OnInit {
   people!: Person[];
   activePeople!: Person[];
   peopleForCarousel!: Person[];
+
+  dealsfromStorage!: Deal[];
+  filteredDeals!: Deal[];
 
   person!: Person;
 
@@ -52,6 +55,9 @@ export class LoansComponent implements OnInit {
     }
     this.buidForm();
     this.peopleForCarousel = this.people.slice(this.offset, this.length);
+    this.isChosen = JSON.parse(localStorage.getItem('isChosen') || '');
+    this.person = JSON.parse(localStorage.getItem('person') || '{}');
+    this.showDealHistory = JSON.parse(localStorage.getItem('history') || '[]')
   }
 
   buidForm(): void {
@@ -74,19 +80,31 @@ export class LoansComponent implements OnInit {
     } else {
       this.dealHistoryButton = 'Hide deals';
     }
+    localStorage.setItem('history', JSON.stringify(this.showDealHistory))
   }
 
   onReturnToCarousel() {
+    localStorage.setItem('people', JSON.stringify(this.people));
+    localStorage.removeItem('person');
     this.isChosen = false;
-    this.activePeopleBoolean = false
+    localStorage.setItem('isChosen', JSON.stringify(this.isChosen));
+    this.activePeopleBoolean = false;
+    this.writeDownDeals()
   }
 
   findPerson(person: Person) {
     this.person = person;
+    localStorage.setItem('person', JSON.stringify(this.person));
     this.onConfirm();
     this.isChosen = true;
+    localStorage.setItem('isChosen', JSON.stringify(this.isChosen));
     this.dealHistoryButton = 'Show all deals';
     this.showDealHistory = false;
+    this.writeDownDeals()
+  }
+
+  writeDownDeals() {
+    localStorage.setItem('deals', JSON.stringify(this.person.deals));
   }
 
   onCarouselDirectionChange(direction: string) {
@@ -177,8 +195,12 @@ export class LoansComponent implements OnInit {
   }
 
   onConfirm() {
+    this.writeDownDeals();
     localStorage.setItem('people', JSON.stringify(this.people));
+    localStorage.setItem('person', JSON.stringify(this.person));
     this.loansForm.reset();
+    this.dealsfromStorage = JSON.parse(localStorage.getItem('deals') || '[]')
+    this.filteredDeals = this.dealsfromStorage
   }
 
   findPeopleToReturnMoneyTo(): Person[] {
@@ -187,7 +209,7 @@ export class LoansComponent implements OnInit {
     let lenders = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.owes.amountToOnePerson
     );
-    this.activePeopleBoolean = true
+    this.activePeopleBoolean = true;
     //find people who will be present in 'returnMoneyTo' select options
     return (this.activePeople = this.people.filter(
       (human) => lenders.includes(human.name) && human.name != this.person.name
@@ -200,7 +222,7 @@ export class LoansComponent implements OnInit {
     let deptors = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.lent.amountToOnePerson
     );
-    this.activePeopleBoolean = true
+    this.activePeopleBoolean = true;
     //find people who will be present in 'receiveMoneyFrom' select options
     return (this.activePeople = this.people.filter(
       (human) => deptors.includes(human.name) && human.name != this.person.name
@@ -216,7 +238,7 @@ export class LoansComponent implements OnInit {
     let debtors = this.personCreditHistoryService.findNamesFromOwesOrLentList(
       this.person.lent.amountToOnePerson
     );
-    this.activePeopleBoolean = true
+    this.activePeopleBoolean = true;
     return (this.activePeople = this.people.filter(
       (human) =>
         !lenders.includes(human.name) &&

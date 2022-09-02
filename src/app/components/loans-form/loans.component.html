@@ -6,7 +6,7 @@
       [backgroundColor]="'inherit'"
       [round]="true"
       [size]="'extra-small'"
-      ><img src="../../../assets/images/arrow-left.png" alt="left"
+      ><img class="arrow" src="../../../assets/images/arrow-left.png" alt="left"
     /></app-button>
     <div class="carousel">
       <app-person-card
@@ -21,7 +21,7 @@
       [backgroundColor]="'inherit'"
       [round]="true"
       [size]="'extra-small'"
-      ><img src="../../../assets/images/arrow-right.png" alt="right"
+      ><img class="arrow" src="../../../assets/images/arrow-right.png" alt="right"
     /></app-button>
   </div>
 
@@ -40,6 +40,8 @@
         <app-history-of-deals
           formGroupName="dealsInfo"
           [person]="person"
+          [deals]="dealsfromStorage"
+          [filteredDeals]="filteredDeals"
         ></app-history-of-deals>
       </div>
     </div>
@@ -99,7 +101,6 @@
     <div class="main__person-button--return">
       <app-button
         (click)="onReturnToCarousel()"
-        [disabled]="!person.deals.length"
         [buttonLabel]="'See all people'"
         [backgroundColor]="'inherit'"
       >

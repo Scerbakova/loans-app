@@ -27,5 +27,7 @@
     </select>
   </div>
 
+  <button (click)="onApply()">Apply</button>
+
 </form>
-<app-deal-card *ngFor="let deal of person.deals" [deal]="deal"></app-deal-card>
+<app-deal-card *ngFor="let deal of filteredDeals" [deal]="deal"></app-deal-card>

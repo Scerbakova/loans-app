@@ -9,5 +9,4 @@ import { Deal } from 'src/app/person-credit-history';
 export class DealCardComponent {
   @Input()
   deal!: Deal
-
 }

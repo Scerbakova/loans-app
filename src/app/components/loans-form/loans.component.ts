@@ -49,16 +49,16 @@ export class LoansComponent implements OnInit {
 
     if (this.innerWidth > 875) {
       this.screen = 'wideScreen';
-      this.length = 3
+      this.length = 3;
     } else if (this.innerWidth < 910 && this.innerWidth > 635) {
       this.screen = 'mediumScreen';
-      this.length = 2
+      this.length = 2;
     } else {
       this.screen = 'smallScreen';
-      this.length = 1
+      this.length = 1;
     }
-    this.peopleForCarousel = this.people.slice(this.offset, this.length)
-    return this.innerWidth
+    this.peopleForCarousel = this.people.slice(this.offset, this.length);
+    return this.innerWidth;
   }
 
   constructor(
@@ -79,8 +79,7 @@ export class LoansComponent implements OnInit {
     this.peopleForCarousel = this.people.slice(this.offset, this.length);
     this.isChosen = JSON.parse(localStorage.getItem('isChosen') || '');
     this.person = JSON.parse(localStorage.getItem('person') || '{}');
-    this.showDealHistory = JSON.parse(localStorage.getItem('history') || '[]')
-    // this.dealsfromStorage = JSON.parse(localStorage.getItem('deals') || '[]')
+    this.showDealHistory = JSON.parse(localStorage.getItem('history') || '[]');
   }
 
   buidForm(): void {
@@ -103,18 +102,15 @@ export class LoansComponent implements OnInit {
     } else {
       this.dealHistoryButton = 'Hide deals';
     }
-    localStorage.setItem('history', JSON.stringify(this.showDealHistory))
-    // this.writeDownDeals()
-    this.filteredDeals = JSON.parse(localStorage.getItem('deals') || '[]')
+    localStorage.setItem('history', JSON.stringify(this.showDealHistory));
+    this.filteredDeals = JSON.parse(localStorage.getItem('deals') || '[]');
   }
 
   onReturnToCarousel() {
-    // localStorage.setItem('people', JSON.stringify(this.people));
-    // localStorage.removeItem('person');
     this.isChosen = false;
     localStorage.setItem('isChosen', JSON.stringify(this.isChosen));
     this.activePeopleBoolean = false;
-    this.writeDownDeals()
+    this.writeDownDeals();
   }
 
   findPerson(person: Person) {
@@ -125,7 +121,7 @@ export class LoansComponent implements OnInit {
     localStorage.setItem('isChosen', JSON.stringify(this.isChosen));
     this.dealHistoryButton = 'Show all deals';
     this.showDealHistory = false;
-    this.writeDownDeals()
+    this.writeDownDeals();
   }
 
   writeDownDeals() {
@@ -224,8 +220,8 @@ export class LoansComponent implements OnInit {
     localStorage.setItem('people', JSON.stringify(this.people));
     localStorage.setItem('person', JSON.stringify(this.person));
     this.loansForm.reset();
-    this.dealsfromStorage = JSON.parse(localStorage.getItem('deals') || '[]')
-    this.filteredDeals = this.dealsfromStorage
+    this.dealsfromStorage = JSON.parse(localStorage.getItem('deals') || '[]');
+    this.filteredDeals = this.dealsfromStorage;
   }
 
   findPeopleToReturnMoneyTo(): Person[] {

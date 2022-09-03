@@ -40,10 +40,10 @@ export class HistoryOfDealsComponent implements OnInit {
   }
 
   largestToSmallest() {
-    this.deals.sort((a, b) => b.amount - a.amount);
+    this.filteredDeals.sort((a, b) => b.amount - a.amount);
   }
   smallestToLargest() {
-    this.deals.sort((a, b) => a.amount - b.amount);
+    this.filteredDeals.sort((a, b) => a.amount - b.amount);
   }
 
   constructor(private rootFormGroup: FormGroupDirective) {}
@@ -53,8 +53,14 @@ export class HistoryOfDealsComponent implements OnInit {
   }
 
   onApply() {
-    this.onFilterApplied();
-    this.onSortApplied();
+    if (!this.form.value.sort) {
+      this.onFilterApplied();
+    } else if (!this.form.value.filter) {
+      this.onSortApplied();
+    } else {
+      this.onFilterApplied();
+      this.onSortApplied();
+    }
   }
 
   onSortApplied() {

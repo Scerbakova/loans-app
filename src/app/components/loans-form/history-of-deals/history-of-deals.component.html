@@ -28,7 +28,7 @@
     <app-button
     (click)="onApply()"
     [buttonLabel]="'Apply'"
-    [disabled]="!this.form.value.sort || !this.form.value.filter"
+    [disabled]="!this.form.value.sort && !this.form.value.filter"
     [backgroundColor]="'inherit'"
   >
   </app-button>

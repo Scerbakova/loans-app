@@ -7,6 +7,4 @@ import { PersonCreditHistoryService } from './person-credit-history.service';
   styleUrls: ['./app.component.scss'],
   providers: [PersonCreditHistoryService],
 })
-export class AppComponent {
-  // title = 'loans';
-}
+export class AppComponent {}
